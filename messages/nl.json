@@ -145,6 +145,9 @@
     "eyebrow": "Praktisch",
     "title": "Goed om te weten",
     "hoursTitle": "Openingsuren",
+    "today": "Vandaag",
+    "openNow": "Nu geopend",
+    "closedNow": "Nu gesloten",
     "hours": [
       { "day": "Maandag", "value": "Gesloten *" },
       { "day": "Dinsdag — donderdag", "value": "11u30–14u30 · 18u00–22u00" },

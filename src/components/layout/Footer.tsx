@@ -1,95 +1,68 @@
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Logo } from '@/components/ui/Logo';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { Phone, MapPin, Facebook } from '@/components/ui/Icons';
-
-type Hour = { day: string; value: string };
+import { Facebook } from '@/components/ui/Icons';
+import blossom from '../../../public/images/blossom.png';
 
 export function Footer() {
   const t = useTranslations('footer');
-  const p = useTranslations('practical');
-  const hours = p.raw('hours') as Hour[];
-  const address = p('address');
   const year = new Date().getFullYear();
 
   return (
     <footer className="relative overflow-hidden border-t border-cream/10 bg-ink-deep">
+      {/* Warm glow */}
       <div
-        className="pointer-events-none absolute -top-40 left-1/2 h-80 w-[120%] -translate-x-1/2 rounded-full opacity-40 blur-3xl"
-        style={{
-          background:
-            'radial-gradient(ellipse at center, rgba(193,39,45,0.22), transparent 70%)',
-        }}
+        className="pointer-events-none absolute -top-44 left-1/2 h-96 w-[130%] -translate-x-1/2 rounded-full opacity-40 blur-3xl"
+        style={{ background: 'radial-gradient(ellipse at center, rgba(193,39,45,0.28), transparent 70%)' }}
       />
-      <div className="container-edge relative py-16 md:py-20">
-        <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          <div>
-            <Logo width={150} />
-            <p className="mt-5 max-w-xs text-sm leading-relaxed text-cream/60">
-              {t('tagline')}
-            </p>
-            <a
-              href="#reservation"
-              className="group mt-6 inline-flex items-center gap-2 rounded-full bg-crimson px-6 py-3 text-sm font-medium text-cream transition-all duration-300 hover:-translate-y-0.5 hover:bg-crimson-bright"
-            >
-              {t('reserve')}
-            </a>
-          </div>
 
-          <div>
-            <h3 className="eyebrow not-italic">{t('openingHours')}</h3>
-            <ul className="mt-5 space-y-3 text-sm">
-              {hours.map((h) => (
-                <li key={h.day} className="flex flex-col">
-                  <span className="text-cream/85">{h.day}</span>
-                  <span className="tabular text-cream/65">{h.value}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+      {/* Blossom branches framing the footer */}
+      <div
+        data-reveal
+        aria-hidden
+        className="pointer-events-none absolute -left-8 top-0 w-[170px] opacity-90 sm:w-[230px] lg:w-[300px]"
+      >
+        <Image src={blossom} alt="" width={300} height={300} className="h-auto w-full" />
+      </div>
+      <div
+        data-reveal
+        aria-hidden
+        className="pointer-events-none absolute -right-8 top-0 w-[170px] opacity-90 sm:w-[230px] lg:w-[300px]"
+        style={{ transform: 'scaleX(-1)' }}
+      >
+        <Image src={blossom} alt="" width={300} height={300} className="h-auto w-full" />
+      </div>
 
-          <div>
-            <h3 className="eyebrow not-italic">{t('visit')}</h3>
-            <address className="mt-5 space-y-4 text-sm not-italic">
-              <a
-                href="https://maps.google.com/?q=Taste+Garden+Kortrijksestraat+276+Izegem"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-start gap-2.5 text-cream/70 transition-colors hover:text-ember"
-              >
-                <MapPin className="mt-0.5 h-[18px] w-[18px] shrink-0 text-ember" />
-                <span className="whitespace-pre-line">{address}</span>
-              </a>
-              <a
-                href="tel:+3251303888"
-                className="flex items-center gap-2.5 text-cream/70 transition-colors hover:text-ember"
-              >
-                <Phone className="h-[18px] w-[18px] shrink-0 text-ember" />
-                <span className="tabular">{p('phone1')}</span>
-              </a>
-            </address>
-          </div>
+      <div className="container-edge relative flex flex-col items-center py-20 text-center md:py-28">
+        <Logo width={210} className="h-auto w-[170px] sm:w-[200px]" />
 
-          <div>
-            <h3 className="eyebrow not-italic">{t('follow')}</h3>
-            <a
-              href="https://www.facebook.com/Taste-Garden-Izegem"
-              target="_blank"
-              rel="noreferrer"
-              className="mt-5 inline-flex items-center gap-2.5 rounded-full border border-cream/15 bg-white/[0.03] px-4 py-2.5 text-sm text-cream/80 transition-colors hover:border-ember/50 hover:text-ember"
-            >
-              <Facebook className="h-[18px] w-[18px]" />
-              {t('facebook')}
-            </a>
-          </div>
-        </div>
+        <p data-reveal className="mt-6 max-w-md text-sm leading-relaxed text-cream/65 sm:text-base">
+          {t('tagline')}
+        </p>
 
-        <div className="mt-14 flex flex-col items-start gap-5 border-t border-cream/10 pt-7 text-xs text-cream/60 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {year} Taste Garden — {t('credit')}. {t('rights')}
-          </p>
-          <LanguageSwitcher />
-        </div>
+        <h2 data-reveal className="mt-12 font-display text-4xl text-cream sm:text-5xl">
+          {t('follow')}
+        </h2>
+        <span data-reveal className="mt-3 h-px w-14 bg-ember/60" />
+
+        <a
+          data-reveal
+          href="https://www.facebook.com/Taste-Garden-Izegem"
+          target="_blank"
+          rel="noreferrer"
+          className="group mt-8 inline-flex items-center gap-3 rounded-full border border-ember/35 bg-white/[0.03] px-7 py-3.5 text-base font-medium text-cream transition-all duration-300 hover:-translate-y-0.5 hover:border-ember hover:text-ember"
+        >
+          <Facebook className="h-5 w-5 text-ember transition-colors group-hover:text-ember" />
+          {t('facebook')}
+        </a>
+      </div>
+
+      <div className="container-edge relative flex flex-col items-center gap-4 border-t border-cream/10 py-7 text-xs text-cream/60 sm:flex-row sm:justify-between">
+        <p>
+          © {year} Taste Garden — {t('credit')}. {t('rights')}
+        </p>
+        <LanguageSwitcher />
       </div>
     </footer>
   );

@@ -145,6 +145,9 @@
     "eyebrow": "Practical",
     "title": "Good to know",
     "hoursTitle": "Opening hours",
+    "today": "Today",
+    "openNow": "Open now",
+    "closedNow": "Closed now",
     "hours": [
       { "day": "Monday", "value": "Closed *" },
       { "day": "Tuesday — Thursday", "value": "11:30–14:30 · 18:00–22:00" },

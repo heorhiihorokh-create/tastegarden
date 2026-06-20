@@ -80,17 +80,24 @@ export function Header() {
                 </a>
 
                 {/* Desktop inline nav */}
-                <nav className="relative z-10 hidden items-center gap-6 lg:flex xl:gap-8">
+                <nav className="relative z-10 hidden items-center gap-5 lg:flex xl:gap-7">
                   {links.map((l) => (
                     <a
                       key={l.id}
                       href={l.href}
-                      className="group relative whitespace-nowrap text-[0.92rem] font-medium tracking-tight text-cream transition-colors duration-300 hover:text-ember"
+                      className="group relative whitespace-nowrap text-[0.88rem] font-medium tracking-tight text-cream transition-colors duration-300 hover:text-ember"
                     >
                       {t(l.id)}
                       <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-ember transition-all duration-300 ease-smooth group-hover:w-full" />
                     </a>
                   ))}
+                  <a
+                    href="#reservation"
+                    className="group relative whitespace-nowrap text-[0.88rem] font-semibold tracking-tight text-ember transition-colors duration-300 hover:text-ember-soft"
+                  >
+                    {t('reserve')}
+                    <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ember/50 transition-all duration-300 ease-smooth group-hover:bg-ember" />
+                  </a>
                 </nav>
 
                 <div className="relative z-10 flex shrink-0 items-center gap-2.5">
@@ -115,9 +122,9 @@ export function Header() {
             <Image src={navRight} alt="" aria-hidden priority className="h-full w-auto shrink-0" />
           </div>
 
-          {/* Extra hanging lanterns — staggered heights, lively */}
+          {/* Extra hanging lanterns — staggered, lively; anchored just under the central bar */}
           <div
-            className={`pointer-events-none absolute inset-x-0 top-full z-[-1] transition-opacity duration-500 ${
+            className={`pointer-events-none absolute inset-x-[15%] top-[calc(100%-8px)] z-0 h-0 transition-opacity duration-500 ${
               scrolled ? 'opacity-0' : 'opacity-100'
             }`}
             aria-hidden
@@ -125,10 +132,17 @@ export function Header() {
             {lanterns.map((l, i) => (
               <span
                 key={i}
-                className={`lantern-sway absolute block origin-top ${l.hideMobile ? 'hidden sm:block' : ''}`}
-                style={{ left: l.left, top: l.top, animationDuration: `${l.dur}s`, animationDelay: `${l.delay}s` }}
+                className={`lantern-sway absolute top-0 block origin-top ${l.hideMobile ? 'hidden sm:block' : ''}`}
+                style={{ left: l.left, marginTop: l.top, animationDuration: `${l.dur}s`, animationDelay: `${l.delay}s` }}
               >
-                <Image src={lanternsDeco} alt="" width={l.w} height={l.w} className="h-auto drop-shadow-[0_8px_14px_rgba(0,0,0,0.5)]" style={{ width: l.w }} />
+                <Image
+                  src={lanternsDeco}
+                  alt=""
+                  width={l.w}
+                  height={l.w}
+                  className="h-auto drop-shadow-[0_8px_14px_rgba(0,0,0,0.5)]"
+                  style={{ width: l.w }}
+                />
               </span>
             ))}
           </div>

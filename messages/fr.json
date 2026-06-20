@@ -145,6 +145,9 @@
     "eyebrow": "Pratique",
     "title": "Bon à savoir",
     "hoursTitle": "Heures d'ouverture",
+    "today": "Aujourd'hui",
+    "openNow": "Ouvert maintenant",
+    "closedNow": "Fermé maintenant",
     "hours": [
       { "day": "Lundi", "value": "Fermé *" },
       { "day": "Mardi — jeudi", "value": "11h30–14h30 · 18h00–22h00" },
