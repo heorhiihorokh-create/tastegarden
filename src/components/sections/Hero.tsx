@@ -5,9 +5,7 @@ import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { gsap, useGSAP } from '@/lib/gsap';
 import { EmberCanvas } from '@/components/motion/EmberCanvas';
-import { ArrowDown } from '@/components/ui/Icons';
 import lanterns from '../../../public/images/lanterns.jpg';
-import blossom from '../../../public/images/blossom.png';
 
 export function Hero() {
   const t = useTranslations('hero');
@@ -84,14 +82,6 @@ export function Hero() {
         <EmberCanvas />
       </div>
 
-      {/* Apricot-blossom branch accent (top-right, drapes into the open space) */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-6 top-10 z-0 w-[155px] opacity-95 sm:right-0 sm:top-12 sm:w-[240px] lg:top-14 lg:w-[320px]"
-      >
-        <Image src={blossom} alt="" width={320} height={320} className="h-auto w-full" />
-      </div>
-
       <div data-hero-content className="container-edge relative z-10 pt-28 pb-24">
         <p data-hero-fade className="eyebrow mb-6">
           <span className="h-px w-7 bg-ember/60" />
@@ -120,7 +110,6 @@ export function Hero() {
             className="group inline-flex items-center gap-2.5 rounded-full bg-crimson px-7 py-4 text-[0.95rem] font-medium text-cream shadow-[0_22px_50px_-20px_rgba(193,39,45,0.95)] transition-all duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-crimson-bright"
           >
             {t('ctaPrimary')}
-            <ArrowDown className="h-[18px] w-[18px] -rotate-90 transition-transform duration-300 group-hover:translate-x-1" />
           </a>
           <a
             href="#formules"

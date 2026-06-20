@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Phone, ArrowRight } from '@/components/ui/Icons';
+import { Phone } from '@/components/ui/Icons';
 
 export function StickyMobileBar() {
   const t = useTranslations('sticky');
@@ -35,7 +35,6 @@ export function StickyMobileBar() {
           className="flex h-12 flex-[1.3] items-center justify-center gap-2 rounded-xl bg-crimson text-sm font-semibold text-cream"
         >
           {t('reserve')}
-          <ArrowRight className="h-[18px] w-[18px]" />
         </a>
       </div>
     </div>

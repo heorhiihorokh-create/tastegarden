@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { Logo } from '@/components/ui/Logo';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { Phone, MapPin, Facebook, ArrowRight } from '@/components/ui/Icons';
+import { Phone, MapPin, Facebook } from '@/components/ui/Icons';
 
 type Hour = { day: string; value: string };
 
@@ -33,7 +33,6 @@ export function Footer() {
               className="group mt-6 inline-flex items-center gap-2 rounded-full bg-crimson px-6 py-3 text-sm font-medium text-cream transition-all duration-300 hover:-translate-y-0.5 hover:bg-crimson-bright"
             >
               {t('reserve')}
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </a>
           </div>
 
