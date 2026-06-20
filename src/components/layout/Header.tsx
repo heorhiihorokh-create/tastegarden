@@ -70,11 +70,11 @@ export function Header() {
                 backgroundRepeat: 'no-repeat',
               }}
             >
-              {/* Legibility panel sitting inside the frame opening */}
-              <div className="absolute inset-x-0 top-[18%] bottom-[30%] bg-ink/45 backdrop-blur-[6px]" />
+              {/* Legibility panel sitting inside the frame opening (upper rectangle) */}
+              <div className="absolute inset-x-[1.5%] top-[12%] h-[40%] rounded-[10px] bg-ink/35 backdrop-blur-[6px]" />
 
-              {/* Content row inside the opening */}
-              <div className="absolute inset-0 flex items-center justify-between gap-3 px-4 pb-[6%] sm:px-6 lg:px-8">
+              {/* Content row centered in the opening (upper rectangle) */}
+              <div className="absolute inset-x-0 top-[6%] flex h-[52%] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
                 <a href="#top" aria-label="Taste Garden" className="relative z-10 flex shrink-0 items-center">
                   <Logo priority width={180} className="h-[32px] w-auto transition-all duration-500 sm:h-[42px] lg:h-[50px]" />
                 </a>
@@ -124,7 +124,7 @@ export function Header() {
 
           {/* Extra hanging lanterns — staggered, lively; anchored just under the central bar */}
           <div
-            className={`pointer-events-none absolute inset-x-[15%] top-[calc(100%-8px)] z-0 h-0 transition-opacity duration-500 ${
+            className={`pointer-events-none absolute inset-x-[16%] top-[80%] z-0 h-0 transition-opacity duration-500 ${
               scrolled ? 'opacity-0' : 'opacity-100'
             }`}
             aria-hidden
