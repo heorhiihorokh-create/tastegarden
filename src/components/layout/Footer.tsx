@@ -43,7 +43,7 @@ export function Footer() {
               {hours.map((h) => (
                 <li key={h.day} className="flex flex-col">
                   <span className="text-cream/85">{h.day}</span>
-                  <span className="tabular text-cream/50">{h.value}</span>
+                  <span className="tabular text-cream/65">{h.value}</span>
                 </li>
               ))}
             </ul>
@@ -85,7 +85,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col items-start gap-5 border-t border-cream/10 pt-7 text-xs text-cream/45 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-14 flex flex-col items-start gap-5 border-t border-cream/10 pt-7 text-xs text-cream/60 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {year} Taste Garden — {t('credit')}. {t('rights')}
           </p>

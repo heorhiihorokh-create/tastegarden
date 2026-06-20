@@ -35,6 +35,7 @@ export function Reservation() {
   const [values, setValues] = useState<Values>(initial);
   const [errors, setErrors] = useState<Partial<Record<keyof Values, string>>>({});
   const [status, setStatus] = useState<Status>('idle');
+  const [hp, setHp] = useState(''); // honeypot
   const formRef = useRef<HTMLFormElement>(null);
 
   const set = (key: keyof Values, value: string) =>
@@ -65,7 +66,7 @@ export function Reservation() {
       const res = await fetch('/api/reservation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
+        body: JSON.stringify({ ...values, company: hp }),
       });
       if (!res.ok) throw new Error('failed');
       setStatus('success');
@@ -76,7 +77,7 @@ export function Reservation() {
 
   const field =
     'w-full rounded-xl border border-cream/15 bg-white/[0.03] px-4 py-3 text-sm text-cream placeholder-cream/35 transition-colors duration-300 focus:border-ember/60 [color-scheme:dark]';
-  const labelCls = 'mb-2 block text-xs font-medium uppercase tracking-wide text-cream/55';
+  const labelCls = 'mb-2 block text-xs font-medium uppercase tracking-wide text-cream/70';
 
   return (
     <section id="reservation" className="scroll-mt-24 py-24 md:py-32">
@@ -130,6 +131,17 @@ export function Reservation() {
               </div>
             ) : (
               <form ref={formRef} onSubmit={onSubmit} noValidate className="space-y-5">
+                {/* Honeypot — hidden from humans, catches bots */}
+                <input
+                  type="text"
+                  name="company"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  value={hp}
+                  onChange={(e) => setHp(e.target.value)}
+                  className="absolute left-[-9999px] h-0 w-0 opacity-0"
+                />
                 {/* Service toggle */}
                 <div className="grid grid-cols-2 gap-2 rounded-xl border border-cream/10 bg-white/[0.02] p-1">
                   {(['lunch', 'dinner'] as const).map((s) => (

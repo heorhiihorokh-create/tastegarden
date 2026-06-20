@@ -97,7 +97,7 @@ export function Dishes() {
                   alt={captions[tile.cap]}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 40vw"
-                  className="scale-[1.06] object-cover transition-transform duration-[1.2s] ease-smooth group-hover:scale-110"
+                  className="appetite scale-[1.06] object-cover transition-transform duration-[1.2s] ease-smooth group-hover:scale-110"
                   placeholder="blur"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-transparent to-transparent" />

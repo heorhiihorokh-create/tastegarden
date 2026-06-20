@@ -27,7 +27,7 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
             className={`rounded-full px-2.5 py-1 text-xs font-semibold tracking-wide transition-colors duration-300 ${
               active
                 ? 'bg-crimson text-cream'
-                : 'text-cream/55 hover:text-cream'
+                : 'text-cream/70 hover:text-cream'
             }`}
           >
             {t(loc)}

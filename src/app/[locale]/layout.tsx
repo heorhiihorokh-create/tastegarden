@@ -38,16 +38,55 @@ export async function generateMetadata({
     title: t('title'),
     description: t('description'),
     metadataBase: new URL('https://www.tastegarden.be'),
+    alternates: {
+      canonical: `/${locale}`,
+      languages: { nl: '/nl', fr: '/fr', en: '/en' },
+    },
     openGraph: {
       title: t('title'),
       description: t('description'),
       type: 'website',
       locale,
       siteName: 'Taste Garden',
+      images: [{ url: '/og.jpg', width: 1200, height: 630, alt: 'Taste Garden — Wereld Keuken' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t('title'),
+      description: t('description'),
+      images: ['/og.jpg'],
     },
     icons: { icon: '/favicon.svg' },
   };
 }
+
+const restaurantSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  name: 'Taste Garden — Wereld Keuken',
+  url: 'https://www.tastegarden.be',
+  image: 'https://www.tastegarden.be/og.jpg',
+  servesCuisine: ['Asian', 'Chinese', 'Japanese', 'Sushi', 'Teppanyaki', 'Wok'],
+  priceRange: '€€',
+  acceptsReservations: true,
+  telephone: '+3251303888',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Kortrijksestraat 276',
+    postalCode: '8870',
+    addressLocality: 'Izegem',
+    addressCountry: 'BE',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: 50.9086, longitude: 3.2168 },
+  openingHoursSpecification: [
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday'], opens: '11:30', closes: '14:30' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday'], opens: '18:00', closes: '22:00' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Friday', 'Saturday'], opens: '11:30', closes: '14:30' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Friday', 'Saturday'], opens: '18:00', closes: '23:00' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Sunday'], opens: '11:30', closes: '16:00' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Sunday'], opens: '18:00', closes: '22:00' },
+  ],
+};
 
 export default async function LocaleLayout({
   children,
@@ -66,6 +105,10 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={`${display.variable} ${sans.variable}`}>
       <body className="bg-ink text-cream antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantSchema) }}
+        />
         <NextIntlClientProvider messages={messages}>
           <SmoothScroll>{children}</SmoothScroll>
         </NextIntlClientProvider>

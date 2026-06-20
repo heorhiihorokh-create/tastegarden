@@ -52,7 +52,7 @@ export function Stations() {
                   alt={s.name}
                   fill
                   sizes="(max-width: 640px) 100vw, 50vw"
-                  className="object-cover transition-transform duration-[1.1s] ease-smooth group-hover:scale-105"
+                  className="appetite object-cover transition-transform duration-[1.1s] ease-smooth group-hover:scale-105"
                   placeholder="blur"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink-soft via-transparent to-transparent" />

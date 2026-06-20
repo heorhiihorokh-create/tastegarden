@@ -32,18 +32,20 @@ export function EmberCanvas({
     const canvas = ref.current;
     if (!canvas) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Desktop / precise-pointer only — keep mid-range phones fast.
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    if (window.matchMedia('(max-width: 768px)').matches) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
     let w = 0;
     let h = 0;
     let raf = 0;
     let running = true;
 
-    const count = Math.round((isMobile ? 18 : 44) * density);
+    const count = Math.round(28 * density);
     const embers: Ember[] = [];
 
     const reset = (e: Ember, initial = false): Ember => {

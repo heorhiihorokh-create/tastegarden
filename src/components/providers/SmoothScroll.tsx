@@ -27,47 +27,52 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
         };
 
         if (!motion) {
-          // Reduced motion: ensure everything is visible, skip Lenis entirely.
+          // Reduced motion: ensure everything is visible, skip smooth scroll entirely.
           gsap.set('[data-reveal]', { opacity: 1, y: 0 });
           ScrollTrigger.refresh();
           return;
         }
 
-        // Smooth scrolling
-        const lenis = new Lenis({
-          duration: 1.1,
-          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-          smoothWheel: true,
-          touchMultiplier: 1.6,
-        });
+        // Smooth scroll ONLY on precise pointers (desktop). Touch devices keep
+        // native, predictable scrolling — no momentum overshoot on phones.
+        const finePointer = window.matchMedia('(pointer: fine)').matches;
+        let lenis: Lenis | null = null;
+        let tick: ((time: number) => void) | null = null;
 
-        lenis.on('scroll', ScrollTrigger.update);
-
-        const tick = (time: number) => lenis.raf(time * 1000);
-        gsap.ticker.add(tick);
-        gsap.ticker.lagSmoothing(0);
+        if (finePointer) {
+          lenis = new Lenis({
+            duration: 0.9,
+            easing: (t) => 1 - Math.pow(1 - t, 3),
+            smoothWheel: true,
+            syncTouch: false,
+          });
+          lenis.on('scroll', ScrollTrigger.update);
+          tick = (time: number) => lenis!.raf(time * 1000);
+          gsap.ticker.add(tick);
+          gsap.ticker.lagSmoothing(0);
+        }
 
         // Global staggered reveal — set hidden state via JS so no-JS users still see content.
         const revealEls = gsap.utils.toArray<HTMLElement>('[data-reveal]');
-        gsap.set(revealEls, { opacity: 0, y: 36 });
+        gsap.set(revealEls, { opacity: 0, y: 30 });
 
         ScrollTrigger.batch('[data-reveal]', {
-          start: 'top 86%',
+          start: 'top 88%',
           once: true,
           onEnter: (batch) =>
             gsap.to(batch, {
               opacity: 1,
               y: 0,
-              duration: 1,
+              duration: 0.9,
               ease: 'power3.out',
-              stagger: 0.09,
+              stagger: 0.08,
               overwrite: true,
             }),
         });
 
         ScrollTrigger.refresh();
 
-        // Glide to in-page anchors via Lenis, offset for the fixed header.
+        // In-page anchors: glide via Lenis on desktop, native smooth scroll on touch.
         const onAnchorClick = (event: MouseEvent) => {
           const target = (event.target as HTMLElement)?.closest(
             'a[href^="#"]',
@@ -75,17 +80,22 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
           if (!target) return;
           const id = target.getAttribute('href');
           if (!id || id === '#') return;
-          const el = document.querySelector(id);
+          const el = document.querySelector(id) as HTMLElement | null;
           if (!el) return;
           event.preventDefault();
-          lenis.scrollTo(el as HTMLElement, { offset: -76, duration: 1.2 });
+          if (lenis) {
+            lenis.scrollTo(el, { offset: -76, duration: 1.1 });
+          } else {
+            const top = el.getBoundingClientRect().top + window.scrollY - 72;
+            window.scrollTo({ top, behavior: 'smooth' });
+          }
         };
         document.addEventListener('click', onAnchorClick);
 
         return () => {
-          gsap.ticker.remove(tick);
+          if (tick) gsap.ticker.remove(tick);
           document.removeEventListener('click', onAnchorClick);
-          lenis.destroy();
+          lenis?.destroy();
         };
       },
     );

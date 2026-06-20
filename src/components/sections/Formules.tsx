@@ -1,7 +1,6 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import { CountUp } from '@/components/motion/CountUp';
 import { Check, Sparkle } from '@/components/ui/Icons';
 
 type Plan = {
@@ -82,24 +81,24 @@ export function Formules() {
                   {plan.time}
                 </span>
               </div>
-              <p className="relative mt-1 text-sm text-cream/55">{plan.days}</p>
+              <p className="relative mt-1 text-sm text-cream/70">{plan.days}</p>
 
               <div className="relative mt-7 flex items-end gap-1.5">
                 <span className="font-display text-6xl text-cream tabular md:text-7xl">
-                  <CountUp value={plan.adults} prefix="€" />
+                  {euro(plan.adults)}
                 </span>
-                <span className="mb-2 text-sm text-cream/55">{t('perPerson')}</span>
+                <span className="mb-2 text-sm text-cream/70">{t('perPerson')}</span>
               </div>
-              <p className="relative mt-1 text-sm text-cream/55">{labels.adults}</p>
+              <p className="relative mt-1 text-sm text-cream/70">{labels.adults}</p>
 
               <div className="relative mt-7 grid grid-cols-2 gap-3 border-t border-cream/10 pt-6 text-sm">
                 <div>
                   <div className="tabular text-lg font-semibold text-cream">{euro(plan.kids)}</div>
-                  <div className="mt-0.5 text-cream/55">{labels.kids}</div>
+                  <div className="mt-0.5 text-cream/70">{labels.kids}</div>
                 </div>
                 <div>
                   <div className="tabular text-lg font-semibold text-cream">{euro(plan.under5)}</div>
-                  <div className="mt-0.5 text-cream/55">{labels.under5}</div>
+                  <div className="mt-0.5 text-cream/70">{labels.under5}</div>
                 </div>
               </div>
 
@@ -146,11 +145,11 @@ export function Formules() {
                 >
                   <div>
                     <div className="font-medium text-cream">{s.name}</div>
-                    <div className="text-sm text-cream/50">{s.date}</div>
+                    <div className="text-sm text-cream/65">{s.date}</div>
                   </div>
                   <div className="text-right">
                     <div className="tabular text-lg font-semibold text-cream">{euro(s.adults)}</div>
-                    <div className="text-xs text-cream/45">{labels.adults}</div>
+                    <div className="text-xs text-cream/60">{labels.adults}</div>
                   </div>
                 </li>
               ))}
@@ -167,7 +166,7 @@ export function Formules() {
           </div>
         </div>
 
-        <p data-reveal className="mt-10 text-center text-sm text-cream/45">
+        <p data-reveal className="mt-10 text-center text-sm text-cream/60">
           {t('note')}
         </p>
       </div>

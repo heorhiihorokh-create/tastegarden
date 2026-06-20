@@ -107,10 +107,15 @@
     color: transparent;
   }
 
-  /* Hanging-lantern gentle sway (pendulum from the string) */
+  /* Make food photography read warmer and more appetising on the dark theme */
+  .appetite {
+    filter: saturate(1.09) contrast(1.05) brightness(1.04);
+  }
+
+  /* Hanging-lantern subtle drift (refined, not a busy swing) */
   .lantern-sway {
     transform-origin: top center;
-    animation: lantern-sway 5s ease-in-out infinite;
+    animation: lantern-sway 7s ease-in-out infinite;
     will-change: transform;
   }
 }
@@ -118,10 +123,10 @@
 @keyframes lantern-sway {
   0%,
   100% {
-    transform: rotate(-5deg);
+    transform: rotate(-2.4deg);
   }
   50% {
-    transform: rotate(5deg);
+    transform: rotate(2.4deg);
   }
 }
 

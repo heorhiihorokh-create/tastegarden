@@ -64,7 +64,7 @@ export function Practical() {
                     </span>
                     <span
                       className={`tabular text-right text-sm ${
-                        active ? 'text-ember' : 'text-cream/50'
+                        active ? 'text-ember' : 'text-cream/65'
                       }`}
                     >
                       {h.value}
@@ -73,7 +73,7 @@ export function Practical() {
                 );
               })}
             </ul>
-            <p className="mt-5 text-xs text-cream/45">{t('hoursNote')}</p>
+            <p className="mt-5 text-xs text-cream/60">{t('hoursNote')}</p>
           </div>
 
           {/* Address + contact + map */}

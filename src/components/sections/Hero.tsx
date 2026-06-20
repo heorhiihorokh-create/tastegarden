@@ -126,7 +126,7 @@ export function Hero() {
       <a
         data-hero-cue
         href="#concept"
-        className="absolute bottom-7 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 text-cream/55 transition-colors hover:text-ember sm:flex"
+        className="absolute bottom-7 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 text-cream/70 transition-colors hover:text-ember sm:flex"
         aria-label={t('skip')}
       >
         <span className="text-[0.66rem] font-medium uppercase tracking-eyebrow">

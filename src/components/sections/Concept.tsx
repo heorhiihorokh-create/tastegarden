@@ -4,7 +4,6 @@ import { useRef } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { gsap, useGSAP } from '@/lib/gsap';
-import { CountUp } from '@/components/motion/CountUp';
 import teppanyaki from '../../../public/images/teppanyaki.png';
 
 type Stat = { value: number; suffix: string; label: string };
@@ -65,12 +64,11 @@ export function Concept() {
               {i > 0 && (
                 <span className="absolute left-0 top-1/2 hidden h-12 w-px -translate-y-1/2 bg-cream/10 sm:block" />
               )}
-              <span className="font-display text-4xl text-ember sm:text-5xl md:text-6xl">
-                <span className="tabular">
-                  <CountUp value={s.value} suffix={s.suffix} />
-                </span>
+              <span className="font-display text-4xl tabular text-ember sm:text-5xl md:text-6xl">
+                {s.value}
+                {s.suffix}
               </span>
-              <span className="mt-3 text-xs leading-snug text-cream/55 sm:text-sm">
+              <span className="mt-3 text-xs leading-snug text-cream/70 sm:text-sm">
                 {s.label}
               </span>
             </div>
@@ -89,7 +87,7 @@ export function Concept() {
             alt="Teppanyaki wagyu"
             fill
             sizes="100vw"
-            className="object-cover object-center"
+            className="appetite object-cover object-center"
             placeholder="blur"
           />
         </div>
