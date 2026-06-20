@@ -9,7 +9,10 @@
     "dishes": "Dishes",
     "formules": "Pricing",
     "practical": "Info",
-    "reserve": "Reserve"
+    "reserve": "Reserve",
+    "menu": "Menu",
+    "close": "Close",
+    "language": "Language"
   },
   "lang": {
     "label": "Language",

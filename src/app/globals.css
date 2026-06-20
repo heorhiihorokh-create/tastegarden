@@ -107,33 +107,21 @@
     color: transparent;
   }
 
-  /* Station rail active state */
-  .station-rail.is-active {
-    color: rgba(244, 236, 228, 0.95);
-  }
-  .station-rail.is-active .station-rail-line {
-    width: 2.75rem;
-    background-color: #d8a24a;
-  }
-  .station-rail.is-active .station-rail-name {
-    color: #d8a24a;
-  }
-
-  /* Immersive (scroll-driven) vs. fallback (reduced-motion / no-JS) variants */
-  .motion-only {
-    display: block;
-  }
-  .reduce-only {
-    display: none;
+  /* Hanging-lantern gentle sway (pendulum from the string) */
+  .lantern-sway {
+    transform-origin: top center;
+    animation: lantern-sway 5s ease-in-out infinite;
+    will-change: transform;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .motion-only {
-    display: none !important;
+@keyframes lantern-sway {
+  0%,
+  100% {
+    transform: rotate(-5deg);
   }
-  .reduce-only {
-    display: block !important;
+  50% {
+    transform: rotate(5deg);
   }
 }
 

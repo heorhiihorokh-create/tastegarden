@@ -9,7 +9,10 @@
     "dishes": "Gerechten",
     "formules": "Formules",
     "practical": "Info",
-    "reserve": "Reserveren"
+    "reserve": "Reserveren",
+    "menu": "Menu",
+    "close": "Sluiten",
+    "language": "Taal"
   },
   "lang": {
     "label": "Taal",
