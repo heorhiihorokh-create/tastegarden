@@ -1,0 +1,65 @@
+import puppeteer from 'puppeteer-core';
+
+const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
+const OUT = '.shots';
+const BASE = 'http://localhost:3000';
+const locale = process.argv[2] || 'nl';
+
+const targets = [
+  { name: 'd', width: 1440, height: 900, mobile: false, dsf: 1 },
+  { name: 'm', width: 402, height: 874, mobile: true, dsf: 2 },
+];
+const sections = ['concept', 'stations', 'dishes', 'formules', 'ambiance', 'practical', 'reservation'];
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+const browser = await puppeteer.launch({
+  executablePath: EDGE,
+  headless: true,
+  args: ['--no-sandbox', '--disable-gpu', '--hide-scrollbars'],
+});
+
+for (const t of targets) {
+  // --- Motion pass: hero only (entrance + ember + parallax bg) ---
+  const hero = await browser.newPage();
+  await hero.setViewport({ width: t.width, height: t.height, isMobile: t.mobile, hasTouch: t.mobile, deviceScaleFactor: t.dsf });
+  await hero.goto(`${BASE}/${locale}`, { waitUntil: 'networkidle2', timeout: 60000 });
+  await sleep(1600);
+  await hero.screenshot({ path: `${OUT}/${t.name}_hero.png` });
+  await hero.close();
+
+  // --- Reduced-motion pass: all content visible, native scroll, count-ups final ---
+  const page = await browser.newPage();
+  await page.setViewport({ width: t.width, height: t.height, isMobile: t.mobile, hasTouch: t.mobile, deviceScaleFactor: t.dsf });
+  await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
+  await page.goto(`${BASE}/${locale}`, { waitUntil: 'networkidle2', timeout: 60000 });
+  // gentle scroll to force any lazy images to load
+  await page.evaluate(async () => {
+    for (let y = 0; y < document.body.scrollHeight; y += 600) {
+      window.scrollTo(0, y);
+      await new Promise((r) => setTimeout(r, 60));
+    }
+    window.scrollTo(0, 0);
+  });
+  await sleep(900);
+
+  for (const id of sections) {
+    const found = await page.evaluate((sid) => {
+      const el = document.getElementById(sid);
+      if (!el) return false;
+      el.scrollIntoView({ block: 'start' });
+      return true;
+    }, id);
+    if (!found) continue;
+    await sleep(450);
+    await page.screenshot({ path: `${OUT}/${t.name}_${id}.png` });
+  }
+
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await sleep(500);
+  await page.screenshot({ path: `${OUT}/${t.name}_footer.png` });
+  await page.close();
+  console.log(`done ${t.name}`);
+}
+
+await browser.close();
+console.log('all done');

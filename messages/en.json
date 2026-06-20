@@ -1,0 +1,202 @@
+{
+  "meta": {
+    "title": "Taste Garden — Asian all-you-can-eat world cuisine in Izegem",
+    "description": "Teppanyaki, wok, sushi and dessert — freshly prepared and all-you-can-eat. Reserve your table at Taste Garden, Kortrijksestraat 276, Izegem."
+  },
+  "nav": {
+    "concept": "Concept",
+    "stations": "Kitchens",
+    "dishes": "Dishes",
+    "formules": "Pricing",
+    "practical": "Info",
+    "reserve": "Reserve"
+  },
+  "lang": {
+    "label": "Language",
+    "nl": "NL",
+    "fr": "FR",
+    "en": "EN"
+  },
+  "sticky": {
+    "reserve": "Reserve",
+    "call": "Call us"
+  },
+  "hero": {
+    "eyebrow": "Asian dining · Izegem",
+    "titleLine1": "A garden",
+    "titleLine2": "of flavours",
+    "subtitle": "Teppanyaki, wok, sushi and dessert — prepared à la minute and yours to enjoy without limits, in the heart of Izegem.",
+    "ctaPrimary": "Reserve a table",
+    "ctaSecondary": "See the pricing",
+    "scroll": "Explore",
+    "skip": "Skip intro"
+  },
+  "concept": {
+    "eyebrow": "The concept",
+    "title": "One price. The whole world on your plate.",
+    "body": "At Taste Garden you don't choose — you taste it all. At our open kitchens the chefs prepare your dishes à la minute, from sizzling teppanyaki to sushi rolled before your eyes. Sit back, take your time and enjoy without limits.",
+    "stats": [
+      { "value": 100, "suffix": "+", "label": "fresh dishes" },
+      { "value": 4, "suffix": "", "label": "live kitchens" },
+      { "value": 1, "suffix": "", "label": "price, unlimited dining" }
+    ]
+  },
+  "stations": {
+    "eyebrow": "The kitchens",
+    "title": "Four kitchens, live before your eyes",
+    "intro": "Walk past our open stations and let yourself be surprised — every dish is made fresh for you.",
+    "items": [
+      {
+        "id": "teppanyaki",
+        "index": "01",
+        "name": "Teppanyaki",
+        "tagline": "Straight off the iron",
+        "description": "On the searing teppan the chef sears wagyu, prawns and vegetables — crisp outside, melting within."
+      },
+      {
+        "id": "wok",
+        "index": "02",
+        "name": "Wok",
+        "tagline": "You choose, the chef fires",
+        "description": "Build your own bowl from fresh ingredients and sauces. The chef stir-fries it all over a roaring flame."
+      },
+      {
+        "id": "sushi",
+        "index": "03",
+        "name": "Sushi bar",
+        "tagline": "Rolled fresh all evening",
+        "description": "Maki, nigiri and California rolls, made fresh on a loop at our sushi bar."
+      },
+      {
+        "id": "dessert",
+        "index": "04",
+        "name": "Dessert & ice cream",
+        "tagline": "The sweet finale",
+        "description": "Fine patisserie, fresh fruit and an all-you-can-eat ice cream bar to finish in style."
+      }
+    ]
+  },
+  "dishes": {
+    "eyebrow": "Signature",
+    "title": "A taste of tonight",
+    "intro": "Fresh, generous and made with care — night after night.",
+    "captions": [
+      "Teppanyaki wagyu",
+      "Wok of the moment",
+      "Shared table, Asian classics",
+      "House dessert",
+      "Under the lanterns",
+      "Fresh from the bar"
+    ]
+  },
+  "formules": {
+    "eyebrow": "Pricing",
+    "title": "Unlimited dining, one clear price",
+    "intro": "Soft drinks, draft beer, house wine, coffee and tea are all included.",
+    "perPerson": "p.p.",
+    "labels": {
+      "adults": "Adults",
+      "kids": "Children 5–11",
+      "under5": "Children under 5"
+    },
+    "plans": [
+      {
+        "id": "lunch",
+        "name": "Lunch",
+        "days": "Tuesday — Saturday",
+        "time": "11:30 – 14:30",
+        "adults": 25,
+        "kids": 17,
+        "under5": 5.5
+      },
+      {
+        "id": "diner",
+        "name": "Dinner",
+        "days": "Every evening · Sun & holidays",
+        "time": "from 18:00",
+        "adults": 43,
+        "kids": 24,
+        "under5": 5.5,
+        "featured": true
+      }
+    ],
+    "includedTitle": "Included",
+    "included": ["Soft drinks", "Draft beer", "House wine", "Coffee & tea"],
+    "specialTitle": "Festive & themed menus",
+    "special": [
+      { "id": "nieuwjaar", "name": "New Year's Eve", "date": "31 December", "adults": 78, "kids": 39, "under5": 15 },
+      { "id": "feestdagen", "name": "Holiday menu", "date": "24–25 Dec · 1 Jan", "adults": 58, "kids": 29, "under5": 13 }
+    ],
+    "birthday": {
+      "title": "Birthday this week?",
+      "body": "Celebrate your birthday with us and enjoy €15 off when you come with 3 or more adults — valid up to 3 days after your birthday."
+    },
+    "note": "Reservation recommended, especially on festive days."
+  },
+  "ambiance": {
+    "eyebrow": "The atmosphere",
+    "quote": "Where the warmth of a garden meets the flavours of Asia.",
+    "body": "Warm lanterns, open kitchens and the scent of the teppan. Taste Garden is a real evening out — with friends, with family, or for that one special moment."
+  },
+  "practical": {
+    "eyebrow": "Practical",
+    "title": "Good to know",
+    "hoursTitle": "Opening hours",
+    "hours": [
+      { "day": "Monday", "value": "Closed *" },
+      { "day": "Tuesday — Thursday", "value": "11:30–14:30 · 18:00–22:00" },
+      { "day": "Friday — Saturday", "value": "11:30–14:30 · 18:00–23:00" },
+      { "day": "Sun & holidays", "value": "11:30–16:00 · 18:00–22:00" }
+    ],
+    "hoursNote": "* Open on public holidays",
+    "addressTitle": "Address",
+    "address": "Kortrijksestraat 276\n8870 Izegem",
+    "directions": "Get directions",
+    "contactTitle": "Contact",
+    "phone1": "051 30 38 88",
+    "phone2": "0460 97 30 88",
+    "call": "Call us"
+  },
+  "reservation": {
+    "eyebrow": "Reservation",
+    "title": "Reserve your table",
+    "intro": "Leave us your details — we'll confirm your reservation as soon as possible. Prefer to call? You're always welcome to.",
+    "form": {
+      "date": "Date",
+      "time": "Time",
+      "service": "Service",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "guests": "Number of guests",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "occasion": "Occasion",
+      "occasionPlaceholder": "Birthday, business dinner…",
+      "message": "Note",
+      "messagePlaceholder": "Allergies, high chair, preference…",
+      "optional": "optional",
+      "submit": "Send request",
+      "sending": "Sending…"
+    },
+    "success": {
+      "title": "Thank you for your request!",
+      "body": "We've received your reservation and will get back to you shortly to confirm.",
+      "again": "New request"
+    },
+    "error": "Something went wrong. Feel free to call us on 051 30 38 88.",
+    "phoneCta": "Or call 051 30 38 88",
+    "required": "This field is required",
+    "invalidEmail": "Enter a valid email address"
+  },
+  "footer": {
+    "tagline": "Asian all-you-can-eat world cuisine in the heart of Izegem.",
+    "openingHours": "Opening hours",
+    "visit": "Visit us",
+    "follow": "Follow us",
+    "facebook": "Facebook",
+    "reserve": "Reserve a table",
+    "rights": "All rights reserved.",
+    "credit": "Wereld Keuken"
+  }
+}

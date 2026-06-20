@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #14100e;
+  --crimson: #c1272d;
+  --ember: #d8a24a;
+  --cream: #f4ece4;
+}
+
+@layer base {
+  * {
+    /* No default focus ring anywhere — replaced by tasteful :focus-visible styling below */
+    outline: none;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    background-color: var(--ink);
+  }
+
+  body {
+    background-color: var(--ink);
+    color: var(--cream);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: rgba(193, 39, 45, 0.85);
+    color: #fff;
+  }
+
+  /* Keyboard-only focus: a soft brand glow + subtle lift — never a hard ring/outline */
+  :focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 1px rgba(216, 162, 74, 0.35),
+      0 0 22px -4px rgba(216, 162, 74, 0.5);
+    border-radius: 6px;
+  }
+
+  /* Mouse / touch interactions show no focus styling at all */
+  :focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+  }
+
+  /* Tabular figures for prices, hours and stats to avoid layout shift */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+}
+
+@layer components {
+  .container-edge {
+    @apply mx-auto w-full max-w-content px-5 sm:px-8 lg:px-12;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[0.72rem] font-medium uppercase tracking-eyebrow text-ember;
+  }
+
+  .glass {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.02)
+    );
+    border: 1px solid rgba(244, 236, 228, 0.1);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  /* Reveal primitives driven by GSAP / IntersectionObserver fallback */
+  .reveal {
+    opacity: 0;
+    transform: translateY(34px);
+    will-change: transform, opacity;
+  }
+
+  .reveal-ready {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .text-stroke {
+    -webkit-text-stroke: 1px rgba(244, 236, 228, 0.28);
+    color: transparent;
+  }
+
+  /* Station rail active state */
+  .station-rail.is-active {
+    color: rgba(244, 236, 228, 0.95);
+  }
+  .station-rail.is-active .station-rail-line {
+    width: 2.75rem;
+    background-color: #d8a24a;
+  }
+  .station-rail.is-active .station-rail-name {
+    color: #d8a24a;
+  }
+
+  /* Immersive (scroll-driven) vs. fallback (reduced-motion / no-JS) variants */
+  .motion-only {
+    display: block;
+  }
+  .reduce-only {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-only {
+    display: none !important;
+  }
+  .reduce-only {
+    display: block !important;
+  }
+}
+
+/* Brand-tinted, minimal scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0d0a08;
+}
+::-webkit-scrollbar-thumb {
+  background: #3a2c23;
+  border-radius: 999px;
+  border: 2px solid #0d0a08;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5a4334;
+}
+
+/* Lenis smooth-scroll wiring */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

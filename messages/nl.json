@@ -1,0 +1,202 @@
+{
+  "meta": {
+    "title": "Taste Garden — Aziatische wereldkeuken à volonté in Izegem",
+    "description": "Teppanyaki, wok, sushi en dessert — vers bereid en onbeperkt te genieten. Reserveer je tafel bij Taste Garden, Kortrijksestraat 276, Izegem."
+  },
+  "nav": {
+    "concept": "Concept",
+    "stations": "Keukens",
+    "dishes": "Gerechten",
+    "formules": "Formules",
+    "practical": "Info",
+    "reserve": "Reserveren"
+  },
+  "lang": {
+    "label": "Taal",
+    "nl": "NL",
+    "fr": "FR",
+    "en": "EN"
+  },
+  "sticky": {
+    "reserve": "Reserveer",
+    "call": "Bel ons"
+  },
+  "hero": {
+    "eyebrow": "Aziatische belevenis · Izegem",
+    "titleLine1": "Een tuin",
+    "titleLine2": "vol smaken",
+    "subtitle": "Teppanyaki, wok, sushi en dessert — à la minute bereid en onbeperkt te genieten in het hart van Izegem.",
+    "ctaPrimary": "Reserveer een tafel",
+    "ctaSecondary": "Ontdek de formules",
+    "scroll": "Ontdek",
+    "skip": "Sla intro over"
+  },
+  "concept": {
+    "eyebrow": "Het concept",
+    "title": "Eén prijs. De hele wereld op je bord.",
+    "body": "Bij Taste Garden kies je niet — je proeft alles. Aan onze open keukens bereiden de chefs jouw gerechten à la minute, van sissende teppanyaki tot vers gerolde sushi. Schuif aan, neem de tijd en geniet onbeperkt.",
+    "stats": [
+      { "value": 100, "suffix": "+", "label": "verse gerechten" },
+      { "value": 4, "suffix": "", "label": "live keukens" },
+      { "value": 1, "suffix": "", "label": "prijs, onbeperkt genieten" }
+    ]
+  },
+  "stations": {
+    "eyebrow": "De keukens",
+    "title": "Vier keukens, live voor je ogen",
+    "intro": "Loop langs onze open stations en laat je verrassen — elk gerecht wordt vers voor je klaargemaakt.",
+    "items": [
+      {
+        "id": "teppanyaki",
+        "index": "01",
+        "name": "Teppanyaki",
+        "tagline": "Van de gloeiende plaat",
+        "description": "Op de hete teppan bakt de chef wagyu, gamba's en groenten — krokant van buiten, boterzacht van binnen."
+      },
+      {
+        "id": "wok",
+        "index": "02",
+        "name": "Wok",
+        "tagline": "Jij kiest, de chef roerbakt",
+        "description": "Stel je eigen schotel samen met verse ingrediënten en sauzen. De chef roerbakt alles op hoog vuur tot perfectie."
+      },
+      {
+        "id": "sushi",
+        "index": "03",
+        "name": "Sushi bar",
+        "tagline": "De hele avond vers gerold",
+        "description": "Maki, nigiri en California rolls, doorlopend vers bereid aan onze sushibar."
+      },
+      {
+        "id": "dessert",
+        "index": "04",
+        "name": "Dessert & ijs",
+        "tagline": "De zoete finale",
+        "description": "Fijne patisserie, vers fruit en een onbeperkte ijsbar om af te sluiten in stijl."
+      }
+    ]
+  },
+  "dishes": {
+    "eyebrow": "Signatuur",
+    "title": "Een greep uit wat je proeft",
+    "intro": "Vers, gul en met zorg bereid — avond na avond.",
+    "captions": [
+      "Teppanyaki wagyu",
+      "Wok van het moment",
+      "Gedeelde tafel, Aziatische klassiekers",
+      "Dessert van het huis",
+      "Onder de lampions",
+      "Vers van de bar"
+    ]
+  },
+  "formules": {
+    "eyebrow": "Formules",
+    "title": "Onbeperkt genieten, één heldere prijs",
+    "intro": "Frisdrank, bier van het vat, huiswijn, koffie en thee zijn inbegrepen.",
+    "perPerson": "p.p.",
+    "labels": {
+      "adults": "Volwassenen",
+      "kids": "Kinderen 5–11 j.",
+      "under5": "Kinderen –5 j."
+    },
+    "plans": [
+      {
+        "id": "lunch",
+        "name": "Lunch",
+        "days": "Dinsdag — zaterdag",
+        "time": "11u30 – 14u30",
+        "adults": 25,
+        "kids": 17,
+        "under5": 5.5
+      },
+      {
+        "id": "diner",
+        "name": "Diner",
+        "days": "Elke avond · zon- & feestdagen",
+        "time": "vanaf 18u00",
+        "adults": 43,
+        "kids": 24,
+        "under5": 5.5,
+        "featured": true
+      }
+    ],
+    "includedTitle": "Inbegrepen",
+    "included": ["Frisdranken", "Bier van het vat", "Huiswijn", "Koffie & thee"],
+    "specialTitle": "Feest- & themamenu's",
+    "special": [
+      { "id": "nieuwjaar", "name": "Oudejaarsavond", "date": "31 december", "adults": 78, "kids": 39, "under5": 15 },
+      { "id": "feestdagen", "name": "Feestdagenmenu", "date": "24–25 dec · 1 jan", "adults": 58, "kids": 29, "under5": 13 }
+    ],
+    "birthday": {
+      "title": "Jarig deze week?",
+      "body": "Vier je verjaardag bij ons en geniet van €15 korting wanneer je met 3 of meer volwassenen komt — geldig tot 3 dagen na je verjaardag."
+    },
+    "note": "Reserveren aanbevolen, zeker voor feest- en themadagen."
+  },
+  "ambiance": {
+    "eyebrow": "De sfeer",
+    "quote": "Waar de gezelligheid van een tuin samenkomt met de smaken van Azië.",
+    "body": "Warme lampions, open keukens en de geur van de teppan. Taste Garden is een avond uit — voor een etentje met vrienden, familie of dat ene speciale moment."
+  },
+  "practical": {
+    "eyebrow": "Praktisch",
+    "title": "Goed om te weten",
+    "hoursTitle": "Openingsuren",
+    "hours": [
+      { "day": "Maandag", "value": "Gesloten *" },
+      { "day": "Dinsdag — donderdag", "value": "11u30–14u30 · 18u00–22u00" },
+      { "day": "Vrijdag — zaterdag", "value": "11u30–14u30 · 18u00–23u00" },
+      { "day": "Zon- & feestdagen", "value": "11u30–16u00 · 18u00–22u00" }
+    ],
+    "hoursNote": "* Wel open op feestdagen",
+    "addressTitle": "Adres",
+    "address": "Kortrijksestraat 276\n8870 Izegem",
+    "directions": "Routebeschrijving",
+    "contactTitle": "Contact",
+    "phone1": "051 30 38 88",
+    "phone2": "0460 97 30 88",
+    "call": "Bel ons"
+  },
+  "reservation": {
+    "eyebrow": "Reserveren",
+    "title": "Reserveer je tafel",
+    "intro": "Laat je gegevens achter — we bevestigen je reservatie zo snel mogelijk. Liever telefonisch? Bel ons gerust.",
+    "form": {
+      "date": "Datum",
+      "time": "Tijdstip",
+      "service": "Dienst",
+      "lunch": "Lunch",
+      "dinner": "Diner",
+      "guests": "Aantal personen",
+      "name": "Naam",
+      "phone": "Telefoon",
+      "email": "E-mail",
+      "occasion": "Gelegenheid",
+      "occasionPlaceholder": "Verjaardag, zakelijk diner…",
+      "message": "Opmerking",
+      "messagePlaceholder": "Allergieën, hoogstoel, voorkeur…",
+      "optional": "optioneel",
+      "submit": "Verstuur aanvraag",
+      "sending": "Versturen…"
+    },
+    "success": {
+      "title": "Bedankt voor je aanvraag!",
+      "body": "We hebben je reservatie ontvangen en nemen snel contact met je op ter bevestiging.",
+      "again": "Nieuwe aanvraag"
+    },
+    "error": "Er ging iets mis. Bel ons gerust op 051 30 38 88.",
+    "phoneCta": "Of bel 051 30 38 88",
+    "required": "Dit veld is verplicht",
+    "invalidEmail": "Vul een geldig e-mailadres in"
+  },
+  "footer": {
+    "tagline": "Aziatische wereldkeuken à volonté in het hart van Izegem.",
+    "openingHours": "Openingsuren",
+    "visit": "Bezoek ons",
+    "follow": "Volg ons",
+    "facebook": "Facebook",
+    "reserve": "Reserveer een tafel",
+    "rights": "Alle rechten voorbehouden.",
+    "credit": "Wereld Keuken"
+  }
+}
