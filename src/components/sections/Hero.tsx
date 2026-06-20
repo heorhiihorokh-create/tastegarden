@@ -7,6 +7,7 @@ import { gsap, useGSAP } from '@/lib/gsap';
 import { EmberCanvas } from '@/components/motion/EmberCanvas';
 import { ArrowDown } from '@/components/ui/Icons';
 import lanterns from '../../../public/images/lanterns.jpg';
+import blossom from '../../../public/images/blossom.png';
 
 export function Hero() {
   const t = useTranslations('hero');
@@ -81,6 +82,14 @@ export function Hero() {
 
       <div className="pointer-events-none absolute inset-0 z-0">
         <EmberCanvas />
+      </div>
+
+      {/* Apricot-blossom branch accent (top-right, drapes into the open space) */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-6 top-10 z-0 w-[155px] opacity-95 sm:right-0 sm:top-12 sm:w-[240px] lg:top-14 lg:w-[320px]"
+      >
+        <Image src={blossom} alt="" width={320} height={320} className="h-auto w-full" />
       </div>
 
       <div data-hero-content className="container-edge relative z-10 pt-28 pb-24">

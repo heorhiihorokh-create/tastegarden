@@ -25,10 +25,14 @@ for (const t of targets) {
   await hero.goto(`${BASE}/${locale}`, { waitUntil: 'networkidle2', timeout: 60000 });
   await sleep(1600);
   await hero.screenshot({ path: `${OUT}/${t.name}_hero.png` });
-  // open the slide menu
-  await hero.click('button[aria-controls="main-menu"]');
-  await sleep(900);
-  await hero.screenshot({ path: `${OUT}/${t.name}_menu.png` });
+  // open the slide menu (burger exists on mobile/tablet only)
+  const burger = await hero.$('button[aria-controls="main-menu"]');
+  const visible = burger && (await burger.boundingBox());
+  if (visible) {
+    await burger.click();
+    await sleep(900);
+    await hero.screenshot({ path: `${OUT}/${t.name}_menu.png` });
+  }
   await hero.close();
 
   // --- Reduced-motion pass: all content visible, native scroll, count-ups final ---

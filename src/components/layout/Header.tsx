@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Logo } from '@/components/ui/Logo';
-import { Lantern } from '@/components/ui/Lantern';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { Menu, Close, ArrowRight, Phone, MapPin } from '@/components/ui/Icons';
+import lanternsDeco from '../../../public/images/lanterns-deco.png';
 
 const links = [
   { id: 'concept', href: '#concept' },
@@ -14,17 +15,6 @@ const links = [
   { id: 'formules', href: '#formules' },
   { id: 'practical', href: '#practical' },
 ] as const;
-
-// Hanging lanterns: varied size / sway timing for a natural, lively row.
-const lanterns = [
-  { size: 26, delay: 0, dur: 5.2, drop: 12 },
-  { size: 34, delay: 0.8, dur: 6.1, drop: 20 },
-  { size: 22, delay: 0.3, dur: 4.6, drop: 9 },
-  { size: 30, delay: 1.2, dur: 5.6, drop: 16 },
-  { size: 24, delay: 0.5, dur: 5.0, drop: 11 },
-  { size: 32, delay: 0.2, dur: 6.4, drop: 18 },
-  { size: 26, delay: 1.0, dur: 4.9, drop: 13 },
-];
 
 const woodStyle: React.CSSProperties = {
   backgroundColor: '#34200f',
@@ -66,10 +56,10 @@ export function Header() {
       <div className={`px-3 transition-all duration-500 ease-smooth sm:px-5 ${scrolled ? 'pt-0' : 'pt-3 sm:pt-4'}`}>
         {/* Wooden plaque */}
         <div
-          className={`relative mx-auto flex max-w-content items-center justify-between transition-all duration-500 ease-smooth ${
+          className={`relative mx-auto flex max-w-content items-center justify-between gap-4 transition-all duration-500 ease-smooth ${
             scrolled
-              ? 'h-[60px] rounded-b-2xl px-4 sm:px-6'
-              : 'h-[68px] rounded-2xl px-4 sm:h-[76px] sm:px-6'
+              ? 'h-[62px] rounded-b-2xl px-4 sm:px-7'
+              : 'h-[70px] rounded-2xl px-4 sm:h-[80px] sm:px-7'
           }`}
           style={woodStyle}
         >
@@ -81,63 +71,79 @@ export function Header() {
           ))}
 
           {/* Logo */}
-          <a href="#top" aria-label="Taste Garden" className="relative z-10 flex items-center">
-            <Logo priority width={scrolled ? 96 : 116} className="transition-all duration-500" />
+          <a href="#top" aria-label="Taste Garden" className="relative z-10 flex shrink-0 items-center">
+            <Logo priority width={scrolled ? 132 : 150} className="h-auto w-[112px] transition-all duration-500 sm:w-[132px] lg:w-[150px]" />
           </a>
 
-          {/* Actions */}
-          <div className="relative z-10 flex items-center gap-2.5 sm:gap-3">
+          {/* Desktop inline nav */}
+          <nav className="relative z-10 hidden items-center gap-7 lg:flex xl:gap-9">
+            {links.map((l) => (
+              <a
+                key={l.id}
+                href={l.href}
+                className="group relative whitespace-nowrap text-[0.92rem] font-medium tracking-tight text-cream/85 transition-colors duration-300 hover:text-ember"
+              >
+                {t(l.id)}
+                <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-ember transition-all duration-300 ease-smooth group-hover:w-full" />
+              </a>
+            ))}
+          </nav>
+
+          {/* Right cluster */}
+          <div className="relative z-10 flex shrink-0 items-center gap-3">
+            <div className="hidden lg:block">
+              <LanguageSwitcher />
+            </div>
+
+            {/* Single premium Reserve button (desktop) */}
             <a
               href="#reservation"
-              className="hidden items-center gap-2 rounded-full bg-crimson px-5 py-2.5 text-[0.86rem] font-semibold text-cream shadow-[0_10px_24px_-12px_rgba(193,39,45,0.9)] transition-all duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-crimson-bright sm:inline-flex"
+              className="hidden items-center gap-2 rounded-full border border-ember/55 bg-crimson px-6 py-2.5 text-[0.9rem] font-semibold tracking-tight text-cream shadow-[0_12px_26px_-14px_rgba(193,39,45,0.95)] transition-all duration-300 ease-smooth hover:-translate-y-0.5 hover:border-ember hover:bg-crimson-bright lg:inline-flex"
             >
               {t('reserve')}
               <ArrowRight className="h-4 w-4" />
             </a>
+
+            {/* Burger — mobile / tablet only */}
             <button
               type="button"
               onClick={() => setOpen(true)}
               aria-label={t('menu')}
               aria-expanded={open}
               aria-controls="main-menu"
-              className="inline-flex items-center gap-2 rounded-full border border-ember/40 bg-ink/35 px-4 py-2.5 text-[0.86rem] font-semibold text-cream transition-colors duration-300 hover:border-ember hover:text-ember"
+              className="inline-flex items-center gap-2 rounded-full border border-ember/45 bg-ink/35 px-4 py-2.5 text-[0.86rem] font-semibold tracking-tight text-cream transition-colors duration-300 hover:border-ember hover:text-ember lg:hidden"
             >
               <Menu className="h-[18px] w-[18px]" />
               <span>{t('menu')}</span>
             </button>
           </div>
 
-          {/* Hanging lanterns */}
-          <div
-            className={`pointer-events-none absolute inset-x-4 top-full flex justify-between transition-opacity duration-500 sm:inset-x-10 ${
+          {/* Real hanging lanterns (decorative) — left of centre so they clear logo + blossom */}
+          <span
+            className={`lantern-sway pointer-events-none absolute left-[38%] top-full block origin-top transition-opacity duration-500 sm:left-[26%] lg:left-[12.5rem] ${
               scrolled ? 'opacity-0' : 'opacity-100'
             }`}
+            style={{ marginTop: '-6px' }}
           >
-            {lanterns.map((l, i) => (
-              <span
-                key={i}
-                className={`lantern-sway block ${i > 4 ? 'hidden sm:block' : ''}`}
-                style={{
-                  animationDelay: `${l.delay}s`,
-                  animationDuration: `${l.dur}s`,
-                  marginTop: '-2px',
-                }}
-              >
-                <Lantern size={l.size} string={l.drop} />
-              </span>
-            ))}
-          </div>
+            <Image
+              src={lanternsDeco}
+              alt=""
+              aria-hidden
+              width={132}
+              height={132}
+              className="h-auto w-[88px] drop-shadow-[0_10px_18px_rgba(0,0,0,0.5)] sm:w-[120px]"
+            />
+          </span>
         </div>
       </div>
 
-      {/* Slide-out menu */}
+      {/* Slide-out menu (mobile / tablet) */}
       <div
         id="main-menu"
         role="dialog"
         aria-modal="true"
-        className={`fixed inset-0 z-[60] ${open ? 'pointer-events-auto' : 'pointer-events-none'}`}
+        className={`fixed inset-0 z-[60] lg:hidden ${open ? 'pointer-events-auto' : 'pointer-events-none'}`}
       >
-        {/* Scrim */}
         <button
           type="button"
           aria-label={t('close')}
@@ -148,7 +154,6 @@ export function Header() {
           }`}
         />
 
-        {/* Panel */}
         <div
           className={`absolute right-0 top-0 flex h-[100dvh] w-full flex-col border-l border-ember/20 bg-ink-deep shadow-lift transition-transform duration-500 ease-smooth sm:w-[420px] ${
             open ? 'translate-x-0' : 'translate-x-full'
@@ -156,7 +161,7 @@ export function Header() {
           style={{ backgroundImage: 'radial-gradient(120% 60% at 100% 0%, rgba(193,39,45,0.16), transparent 60%)' }}
         >
           <div className="flex items-center justify-between px-6 pt-6">
-            <Logo width={104} />
+            <Logo width={120} className="h-auto w-[120px]" />
             <button
               type="button"
               onClick={() => setOpen(false)}
@@ -211,7 +216,7 @@ export function Header() {
             </div>
 
             <div className="mt-6 flex items-center justify-between border-t border-cream/10 pt-5">
-              <span className="text-xs uppercase tracking-eyebrow text-cream/40">{t('language')}</span>
+              <span className="text-xs uppercase tracking-eyebrow text-cream/60">{t('language')}</span>
               <LanguageSwitcher />
             </div>
           </div>

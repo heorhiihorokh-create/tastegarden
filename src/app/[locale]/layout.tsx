@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Playfair_Display, Inter } from 'next/font/google';
+import { Fraunces, Inter } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
@@ -7,9 +7,10 @@ import { routing, type Locale } from '@/i18n/routing';
 import { SmoothScroll } from '@/components/providers/SmoothScroll';
 import '../globals.css';
 
-const display = Playfair_Display({
+const display = Fraunces({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
+  style: ['normal', 'italic'],
   variable: '--font-display',
   display: 'swap',
 });

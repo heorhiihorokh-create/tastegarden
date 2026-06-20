@@ -25,7 +25,6 @@ type Special = {
 
 export function Formules() {
   const t = useTranslations('formules');
-  const tNav = useTranslations('nav');
   const locale = useLocale();
   const plans = t.raw('plans') as Plan[];
   const included = t.raw('included') as string[];
@@ -101,17 +100,6 @@ export function Formules() {
                   <div className="mt-0.5 text-cream/70">{labels.under5}</div>
                 </div>
               </div>
-
-              <a
-                href="#reservation"
-                className={`relative mt-8 flex w-full items-center justify-center gap-2 rounded-full py-3.5 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 ${
-                  plan.featured
-                    ? 'bg-crimson text-cream hover:bg-crimson-bright'
-                    : 'border border-cream/20 text-cream hover:border-ember/60 hover:text-ember'
-                }`}
-              >
-                {tNav('reserve')}
-              </a>
             </div>
           ))}
         </div>
