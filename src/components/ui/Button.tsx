@@ -5,7 +5,7 @@ type Variant = 'primary' | 'ghost' | 'ember';
 
 const variants: Record<Variant, string> = {
   primary:
-    'bg-crimson text-cream hover:bg-crimson-bright shadow-[0_18px_40px_-18px_rgba(193,39,45,0.9)]',
+    'bg-crimson text-[#f4ece4] hover:bg-crimson-bright shadow-[0_18px_40px_-18px_rgba(193,39,45,0.9)]',
   ember:
     'bg-ember text-ink hover:bg-ember-soft shadow-[0_18px_40px_-18px_rgba(216,162,74,0.8)]',
   ghost:

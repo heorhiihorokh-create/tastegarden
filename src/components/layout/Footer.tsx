@@ -48,7 +48,7 @@ export function Footer() {
 
         <a
           data-reveal
-          href="https://www.facebook.com/Taste-Garden-Izegem"
+          href="https://www.facebook.com/share/1bfbTKT3WA/?mibextid=wwXIfr"
           target="_blank"
           rel="noreferrer"
           className="group mt-8 inline-flex items-center gap-3 rounded-full border border-ember/35 bg-white/[0.03] px-7 py-3.5 text-base font-medium text-cream transition-all duration-300 hover:-translate-y-0.5 hover:border-ember hover:text-ember"

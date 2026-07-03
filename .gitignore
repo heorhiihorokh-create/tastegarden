@@ -1,5 +1,8 @@
 /node_modules
 /.next
+/.next-dev
+/.next-build
+/.next-verify
 /out
 /build
 *.log
@@ -8,3 +11,5 @@
 next-env.d.ts
 /fig_extract
 /.shots
+/.agents
+tsconfig.tsbuildinfo

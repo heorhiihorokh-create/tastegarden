@@ -27,8 +27,9 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
         };
 
         if (!motion) {
-          // Reduced motion: ensure everything is visible, skip smooth scroll entirely.
-          gsap.set('[data-reveal]', { opacity: 1, y: 0 });
+          // Reduced motion: content is never hidden (the [data-reveal] hidden state
+          // only exists inside a prefers-reduced-motion: no-preference media query),
+          // so skip smooth scroll and reveal wiring entirely.
           ScrollTrigger.refresh();
           return;
         }
@@ -53,13 +54,11 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
         }
 
         // Global staggered reveal — set hidden state via JS so no-JS users still see content.
-        const revealEls = gsap.utils.toArray<HTMLElement>('[data-reveal]');
-        gsap.set(revealEls, { opacity: 0, y: 30 });
-
         ScrollTrigger.batch('[data-reveal]', {
           start: 'top 88%',
           once: true,
-          onEnter: (batch) =>
+          onEnter: (batch) => {
+            batch.forEach((el) => (el as HTMLElement).setAttribute('data-reveal-ready', ''));
             gsap.to(batch, {
               opacity: 1,
               y: 0,
@@ -67,7 +66,8 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
               ease: 'power3.out',
               stagger: 0.08,
               overwrite: true,
-            }),
+            });
+          },
         });
 
         ScrollTrigger.refresh();
@@ -83,10 +83,22 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
           const el = document.querySelector(id) as HTMLElement | null;
           if (!el) return;
           event.preventDefault();
+          const isMenuCategory = el.hasAttribute('data-menu-category');
+          const menuNav = document.querySelector<HTMLElement>('[data-menu-nav]');
+          // Use the full pre-compaction height. The scroll-triggered shrink then
+          // removes exactly that height delta and leaves a stable 20px gap.
+          const menuOffset = menuNav
+            ? menuNav.getBoundingClientRect().height + (finePointer ? 98 : 92)
+            : 160;
+          const anchorOffset = isMenuCategory ? menuOffset : 76;
           if (lenis) {
-            lenis.scrollTo(el, { offset: -76, duration: 1.1 });
+            lenis.scrollTo(el, {
+              offset: -anchorOffset,
+              duration: 1.1,
+            });
           } else {
-            const top = el.getBoundingClientRect().top + window.scrollY - 72;
+            const top =
+              el.getBoundingClientRect().top + window.scrollY - anchorOffset;
             window.scrollTo({ top, behavior: 'smooth' });
           }
         };

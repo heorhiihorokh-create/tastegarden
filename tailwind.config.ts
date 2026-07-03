@@ -6,26 +6,26 @@ const config: Config = {
     extend: {
       colors: {
         ink: {
-          DEFAULT: '#14100E',
-          deep: '#0D0A08',
-          soft: '#1E1713',
-          raise: '#251C17',
+          DEFAULT: 'rgb(var(--ink) / <alpha-value>)',
+          deep: 'rgb(var(--ink-deep) / <alpha-value>)',
+          soft: 'rgb(var(--ink-soft) / <alpha-value>)',
+          raise: 'rgb(var(--ink-raise) / <alpha-value>)',
         },
         crimson: {
-          DEFAULT: '#C1272D',
-          deep: '#8E1B20',
-          bright: '#E03B33',
+          DEFAULT: 'rgb(var(--crimson) / <alpha-value>)',
+          deep: 'rgb(var(--crimson-deep) / <alpha-value>)',
+          bright: 'rgb(var(--crimson-bright) / <alpha-value>)',
         },
         ember: {
-          DEFAULT: '#D8A24A',
-          soft: '#E8C98A',
-          deep: '#A9762B',
+          DEFAULT: 'rgb(var(--ember) / <alpha-value>)',
+          soft: 'rgb(var(--ember-soft) / <alpha-value>)',
+          deep: 'rgb(var(--ember-deep) / <alpha-value>)',
         },
         cream: {
-          DEFAULT: '#F4ECE4',
-          dim: '#D8CABB',
+          DEFAULT: 'rgb(var(--cream) / <alpha-value>)',
+          dim: 'rgb(var(--cream-dim) / <alpha-value>)',
         },
-        muted: '#A8988A',
+        muted: 'rgb(var(--muted) / <alpha-value>)',
       },
       fontFamily: {
         display: ['var(--font-display)', 'Georgia', 'serif'],

@@ -2,36 +2,94 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Clock, MapPin, Phone, ArrowRight } from '@/components/ui/Icons';
+import { Clock, MapPin, Phone, Sun, Moon, Lock } from '@/components/ui/Icons';
+import { SectionEmblem } from '@/components/ui/SectionEmblem';
+import {
+  getBelgiumNow,
+  getOpeningWindowsForDate,
+  getWeekday,
+  isBelgianPublicHoliday,
+  isCompensationTuesdayClosed,
+} from '@/lib/openingSchedule';
+import { useTheme } from '@/lib/useTheme';
 
-type Hour = { day: string; value: string };
+/** Build a dial-able tel: href from a displayed BE phone number (so edits actually call it). */
+function telHref(display: string): string {
+  let d = display.replace(/[^\d+]/g, '');
+  if (d.startsWith('00')) d = `+${d.slice(2)}`;
+  else if (d.startsWith('0')) d = `+32${d.slice(1)}`;
+  return `tel:${d}`;
+}
+
+type Hour = {
+  day: string;
+  lunch?: string;
+  dinner?: string;
+  closed?: boolean;
+  lunchLocked?: boolean;
+};
+type FocusRule = { title: string; body: string; holidayLabel: string; holiday: string };
 
 // JS weekday (0=Sun..6=Sat) -> grouped hours row index used in the i18n list.
 const dayToRow: Record<number, number> = { 1: 0, 2: 1, 3: 1, 4: 1, 5: 2, 6: 2, 0: 3 };
 
-// Opening ranges in minutes-from-midnight, keyed by JS weekday. Monday closed.
-const schedule: Record<number, [number, number][]> = {
-  0: [[690, 960], [1080, 1320]], // Sun 11:30–16:00 · 18:00–22:00
-  1: [],
-  2: [[690, 870], [1080, 1320]], // Tue–Thu 11:30–14:30 · 18:00–22:00
-  3: [[690, 870], [1080, 1320]],
-  4: [[690, 870], [1080, 1320]],
-  5: [[690, 870], [1080, 1380]], // Fri–Sat 11:30–14:30 · 18:00–23:00
-  6: [[690, 870], [1080, 1380]],
-};
+// One service window (lunch = sun, dinner = moon) rendered as a compact time chip.
+function TimeChip({
+  icon: Icon,
+  time,
+  label,
+  active,
+  locked = false,
+  lockedLabel,
+}: {
+  icon: typeof Sun;
+  time: string;
+  label: string;
+  active: boolean;
+  locked?: boolean;
+  lockedLabel?: string;
+}) {
+  return (
+    <span
+      aria-label={locked && lockedLabel ? `${label}: ${time} (${lockedLabel})` : `${label}: ${time}`}
+      className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[0.78rem] tabular transition-colors ${
+        locked
+          ? 'border-ember/20 bg-ember/[0.045] text-cream/50'
+          : active
+          ? 'border-ember/35 bg-ember/[0.12] text-cream'
+          : 'border-cream/10 bg-cream/[0.04] text-cream/75'
+      }`}
+    >
+      <Icon aria-hidden className={`h-3.5 w-3.5 shrink-0 ${locked ? 'text-ember/70' : active ? 'text-ember' : 'text-ember/80'}`} />
+      {time}
+    </span>
+  );
+}
 
 export function Practical() {
   const t = useTranslations('practical');
+  const theme = useTheme();
+  const isLight = theme === 'light';
   const hours = t.raw('hours') as Hour[];
+  const focusRule = t.raw('focusRule') as FocusRule;
   const [todayRow, setTodayRow] = useState<number | null>(null);
   const [openNow, setOpenNow] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const now = new Date();
-    setTodayRow(dayToRow[now.getDay()]);
-    const mins = now.getHours() * 60 + now.getMinutes();
-    const ranges = schedule[now.getDay()] || [];
-    setOpenNow(ranges.some(([a, b]) => mins >= a && mins < b));
+    const now = getBelgiumNow();
+    const weekday = getWeekday(now.iso);
+    const row = isCompensationTuesdayClosed(now.iso)
+      ? null
+      : isBelgianPublicHoliday(now.iso)
+        ? 3
+        : dayToRow[weekday];
+
+    setTodayRow(row ?? null);
+    setOpenNow(
+      Object.values(getOpeningWindowsForDate(now.iso)).some(
+        ([start, end]) => now.minutes >= start && now.minutes < end,
+      ),
+    );
   }, []);
 
   const mapSrc =
@@ -41,6 +99,7 @@ export function Practical() {
     <section id="practical" className="scroll-mt-28 py-24 md:py-32">
       <div className="container-edge">
         <div className="mb-12 max-w-2xl md:mb-16">
+          <SectionEmblem variant="practical" className="mb-3" />
           <p data-reveal className="eyebrow mb-5">
             {t('eyebrow')}
           </p>
@@ -50,6 +109,33 @@ export function Practical() {
           >
             {t('title')}
           </h2>
+        </div>
+
+        <div data-reveal className="policy-shell policy-notice mb-8 rounded-[1.35rem] p-3.5 md:mb-10 md:rounded-[1.45rem] md:p-5 lg:p-6">
+          <div className="relative grid gap-4 md:grid-cols-[minmax(0,0.86fr)_minmax(19rem,0.62fr)] md:items-center">
+            <article className="policy-rule-panel pl-4 md:pl-6">
+              <p className="inline-flex items-center gap-2 text-[0.62rem] font-bold uppercase tracking-[0.2em] text-ember md:text-[0.68rem] md:tracking-[0.24em]">
+                <Clock className="h-3.5 w-3.5" />
+                {t('rulesTitle')}
+              </p>
+              <h3 className="mt-2.5 font-display text-[clamp(1.72rem,7vw,3rem)] leading-[1.02] text-cream md:mt-3">
+                {focusRule.title}
+              </h3>
+              <p className="mt-2 max-w-[42rem] text-[0.94rem] leading-relaxed text-cream/80 md:text-[1.05rem]">
+                {focusRule.body}
+              </p>
+            </article>
+
+            <aside className="policy-note rounded-[1.1rem] px-3.5 py-3 md:rounded-2xl md:px-5 md:py-4">
+              <span className="mb-1.5 inline-flex items-center gap-2 text-[0.66rem] font-bold uppercase tracking-[0.2em] text-ember">
+                <Moon className="h-3.5 w-3.5" />
+                {focusRule.holidayLabel}
+              </span>
+              <p className="text-[0.92rem] leading-relaxed text-cream/76 md:text-[0.96rem]">
+                {focusRule.holiday}
+              </p>
+            </aside>
+          </div>
         </div>
 
         <div className="grid gap-5 lg:grid-cols-2">
@@ -72,34 +158,62 @@ export function Practical() {
               )}
             </div>
 
-            <ul className="divide-y divide-cream/10">
+            <ul className="space-y-1.5">
               {hours.map((h, i) => {
                 const active = todayRow === i;
                 return (
                   <li
                     key={h.day}
-                    className={`flex items-center justify-between gap-4 rounded-xl px-3 py-3.5 transition-colors ${
-                      active ? 'bg-crimson/10' : ''
+                    className={`relative flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-2xl px-3.5 py-3 transition-colors ${
+                      active
+                        ? 'bg-gradient-to-r from-ember/[0.12] via-ember/[0.05] to-transparent'
+                        : 'hover:bg-cream/[0.03]'
                     }`}
                   >
+                    {active && (
+                      <span
+                        aria-hidden
+                        className="absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-r-full bg-ember"
+                      />
+                    )}
                     <span className="flex items-center gap-2.5">
-                      <span className={`text-[0.95rem] font-medium ${active ? 'text-cream' : 'text-cream/80'}`}>
+                      <span className={`text-[0.95rem] font-medium ${active ? 'text-cream' : 'text-cream/85'}`}>
                         {h.day}
                       </span>
                       {active && (
-                        <span className="rounded-full bg-ember/20 px-2 py-0.5 text-[0.62rem] font-semibold uppercase tracking-wide text-ember">
+                        <span className="rounded-full bg-ember/20 px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide text-ember">
                           {t('today')}
                         </span>
                       )}
                     </span>
-                    <span className={`tabular text-right text-sm ${active ? 'text-ember' : 'text-cream/65'}`}>
-                      {h.value}
+
+                    <span className="flex flex-wrap items-center gap-2 sm:justify-end">
+                      {h.closed ? (
+                        <span className="inline-flex items-center rounded-lg border border-cream/[0.08] bg-cream/[0.02] px-2.5 py-1 text-[0.78rem] font-medium text-cream/45">
+                          {t('closed')}
+                        </span>
+                      ) : (
+                        <>
+                          {h.lunch && (
+                            <TimeChip
+                              icon={h.lunchLocked ? Lock : Sun}
+                              time={h.lunch}
+                              label={t('lunchLabel')}
+                              active={active}
+                              locked={h.lunchLocked}
+                              lockedLabel={t('notReservableLabel')}
+                            />
+                          )}
+                          {h.dinner && (
+                            <TimeChip icon={Moon} time={h.dinner} label={t('dinnerLabel')} active={active} />
+                          )}
+                        </>
+                      )}
                     </span>
                   </li>
                 );
               })}
             </ul>
-            <p className="mt-5 text-xs text-cream/60">{t('hoursNote')}</p>
           </div>
 
           {/* Address + contact + map */}
@@ -115,29 +229,34 @@ export function Practical() {
                   href="https://maps.google.com/?q=Kortrijksestraat+276+8870+Izegem"
                   target="_blank"
                   rel="noreferrer"
-                  className="group mt-4 inline-flex items-center gap-2 text-sm font-medium text-cream transition-colors hover:text-ember"
+                  className="group mt-2.5 self-start text-sm font-medium text-cream underline decoration-ember/45 decoration-1 underline-offset-[5px] transition-colors hover:text-ember hover:decoration-ember/80"
                 >
                   {t('directions')}
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </a>
               </div>
 
               <div className="flex flex-col">
                 <Phone className="h-5 w-5 text-ember" />
                 <h3 className="mt-4 text-xs uppercase tracking-eyebrow text-ember">{t('contactTitle')}</h3>
-                <a href="tel:+3251303888" className="mt-3 block tabular text-[0.95rem] text-cream/85 transition-colors hover:text-ember">
-                  {t('phone1')}
-                </a>
-                <a href="tel:+32460973088" className="mt-1 block tabular text-[0.95rem] text-cream/85 transition-colors hover:text-ember">
-                  {t('phone2')}
-                </a>
-                <a
-                  href="tel:+3251303888"
-                  className="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-crimson px-4 py-2.5 text-sm font-semibold text-cream transition-all duration-300 hover:-translate-y-0.5 hover:bg-crimson-bright"
-                >
-                  <Phone className="h-4 w-4" />
-                  {t('call')}
-                </a>
+                <p className="mt-2 text-[0.82rem] leading-relaxed text-cream/55">{t('callHint')}</p>
+                <div className="mt-3.5 grid gap-2.5">
+                  <a
+                    href={telHref(t('phone1'))}
+                    aria-label={`${t('call')} ${t('phone1')}`}
+                    className="group flex items-center justify-center gap-2.5 rounded-full bg-crimson px-5 py-3 text-[0.95rem] font-semibold tabular text-[#f4ece4] transition-all duration-300 hover:-translate-y-0.5 hover:bg-crimson-bright active:translate-y-0"
+                  >
+                    <Phone className="h-4 w-4 shrink-0" />
+                    {t('phone1')}
+                  </a>
+                  <a
+                    href={telHref(t('phone2'))}
+                    aria-label={`${t('call')} ${t('phone2')}`}
+                    className="group flex items-center justify-center gap-2.5 rounded-full border border-cream/20 bg-white/[0.03] px-5 py-3 text-[0.95rem] font-semibold tabular text-cream transition-all duration-300 hover:-translate-y-0.5 hover:border-ember/55 hover:text-ember active:translate-y-0"
+                  >
+                    <Phone className="h-4 w-4 shrink-0 text-ember" />
+                    {t('phone2')}
+                  </a>
+                </div>
               </div>
             </div>
 
@@ -150,7 +269,9 @@ export function Practical() {
                 className="h-[220px] w-full"
                 style={{
                   border: 0,
-                  filter: 'invert(0.92) hue-rotate(180deg) brightness(0.95) contrast(0.92)',
+                  filter: isLight
+                    ? 'saturate(0.72) contrast(0.92) brightness(1.02)'
+                    : 'invert(0.92) hue-rotate(180deg) brightness(0.95) contrast(0.92)',
                 }}
               />
               <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-cream/10" />

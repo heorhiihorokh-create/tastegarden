@@ -32,7 +32,7 @@ export function StickyMobileBar() {
         </a>
         <a
           href="#reservation"
-          className="flex h-12 flex-[1.3] items-center justify-center gap-2 rounded-xl bg-crimson text-sm font-semibold text-cream"
+          className="flex h-12 flex-[1.3] items-center justify-center gap-2 rounded-xl bg-crimson text-sm font-semibold text-[#f4ece4]"
         >
           {t('reserve')}
         </a>

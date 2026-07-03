@@ -4,27 +4,40 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Logo } from '@/components/ui/Logo';
+import { LogoMark } from '@/components/ui/LogoMark';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { Menu, Close, ArrowRight, Phone, MapPin } from '@/components/ui/Icons';
 import navLeft from '../../../public/images/nav-left.png';
 import navMid from '../../../public/images/nav-mid.png';
 import navRight from '../../../public/images/nav-right.png';
-import lanternsDeco from '../../../public/images/lanterns-deco.png';
+import navLeftLight from '../../../public/images/navbar-light-new-left.png';
+import navMidLight from '../../../public/images/navbar-light-new-mid.png';
+import navRightLight from '../../../public/images/navbar-light-new-right.png';
+import lantern from '../../../public/images/lantern.png';
+import menuFrame from '../../../public/images/menu-frame.png';
 
 const links = [
-  { id: 'concept', href: '#concept' },
+  { id: 'concept', href: '#top' },
   { id: 'stations', href: '#stations' },
-  { id: 'dishes', href: '#dishes' },
   { id: 'formules', href: '#formules' },
+  { id: 'dishes', href: '#dishes' },
   { id: 'practical', href: '#practical' },
 ] as const;
 
-// Extra hanging lanterns — varied size / drop / timing so they feel alive (never identical).
+// Single lantern art aspect (width / height) — used to keep every drop in proportion.
+const LANTERN_AR = lantern.width / lantern.height;
+
+// Hanging lanterns pinned to the lower edge of the red bar: evenly spaced + symmetric
+// about the centre, with a gentle arch (centre hangs lowest) and lively timing.
+// `vis` scales the count by width — a small flanking pair on phones, 3 on tablet,
+// all 5 on desktop. `img`/`drop` shrink on phone so they tuck just under the bar.
 const lanterns = [
-  { left: '30%', w: 44, top: 0, dur: 6.2, delay: 0, hideMobile: true },
-  { left: '46%', w: 58, top: 12, dur: 5.2, delay: 0.7 },
-  { left: '64%', w: 42, top: 2, dur: 6.8, delay: 0.3 },
-  { left: '80%', w: 52, top: 16, dur: 5.6, delay: 1.1, hideMobile: true },
+  { left: '8%', img: 'w-[26px]', drop: 'h-[10px]', dur: 6.6, delay: 0.0, vis: 'hidden lg:block' },
+  { left: '27%', img: 'w-[24px] sm:w-[32px]', drop: 'h-[14px] sm:h-[18px]', dur: 5.6, delay: 0.6, vis: 'block' },
+  { left: '50%', img: 'w-[36px]', drop: 'h-[22px]', dur: 6.9, delay: 0.25, vis: 'hidden sm:block' },
+  { left: '73%', img: 'w-[24px] sm:w-[32px]', drop: 'h-[14px] sm:h-[18px]', dur: 5.9, delay: 0.85, vis: 'block' },
+  { left: '92%', img: 'w-[26px]', drop: 'h-[10px]', dur: 6.3, delay: 0.4, vis: 'hidden lg:block' },
 ];
 
 export function Header() {
@@ -32,12 +45,51 @@ export function Header() {
   const p = useTranslations('practical');
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState('');
 
+  // Scroll state + scroll-spy in ONE rAF-throttled handler: scroll events fire on
+  // every Lenis/GSAP frame, and layout reads (getBoundingClientRect) interleaved
+  // with their transform writes force synchronous layout. Coalescing to at most
+  // one measurement per frame keeps scrolling smooth.
+  //
+  // Scroll-spy: highlight only the section currently in view. Nothing is highlighted on the
+  // hero (no matching link); the last section (reservation) activates when scrolled to the
+  // bottom, where it can't reach the activation line on its own.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    const ids = [...links.map((l) => l.href.slice(1)), 'reservation'];
+    let raf = 0;
+    const compute = () => {
+      raf = 0;
+      setScrolled(window.scrollY > 40);
+      const doc = document.documentElement;
+      // At the very bottom the last section can't reach the line — force it active.
+      if (window.scrollY + window.innerHeight >= doc.scrollHeight - 4) {
+        setActive(ids[ids.length - 1]);
+        return;
+      }
+      const line = window.innerHeight * 0.32;
+      let straddle = ''; // section the activation line currently falls within
+      let passed = ''; // last section whose top has crossed the line (covers gaps)
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const r = el.getBoundingClientRect();
+        if (r.top <= line) passed = id;
+        if (r.top <= line && r.bottom > line) straddle = id;
+      }
+      setActive(straddle || passed);
+    };
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(compute);
+    };
+    compute();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+    };
   }, []);
 
   useEffect(() => {
@@ -50,57 +102,209 @@ export function Header() {
     };
   }, [open]);
 
+  const navRow = (
+    <>
+      <a
+        href="#top"
+        aria-label="Taste Garden"
+        className="relative z-10 flex shrink-0 items-center"
+      >
+        <LogoMark
+          priority
+          className="h-[26px] w-auto transition-all duration-500 sm:h-[32px] lg:h-[38px]"
+        />
+      </a>
+
+      <nav className="absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-5 lg:flex xl:gap-7">
+        {links.map((l) => {
+          const isActive = active === l.href.slice(1);
+          return (
+            <a
+              key={l.id}
+              href={l.href}
+              aria-current={isActive ? 'page' : undefined}
+              className={`group relative whitespace-nowrap text-[0.88rem] font-medium tracking-tight transition-colors duration-300 ${
+                isActive ? 'text-ember' : 'text-cream hover:text-ember'
+              }`}
+            >
+              {t(l.id)}
+              <span
+                className={`absolute -bottom-1.5 left-0 h-px bg-ember transition-all duration-300 ease-smooth ${
+                  isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                }`}
+              />
+            </a>
+          );
+        })}
+        <a
+          href="#reservation"
+          aria-current={active === 'reservation' ? 'page' : undefined}
+          className={`group relative whitespace-nowrap text-[0.88rem] font-semibold tracking-tight transition-colors duration-300 ${
+            active === 'reservation' ? 'text-ember' : 'text-cream hover:text-ember'
+          }`}
+        >
+          {t('reserve')}
+          <span
+            className={`absolute -bottom-1.5 left-0 h-px bg-ember transition-all duration-300 ease-smooth ${
+              active === 'reservation' ? 'w-full' : 'w-0 group-hover:w-full'
+            }`}
+          />
+        </a>
+      </nav>
+
+      <div className="relative z-10 -mr-4 flex shrink-0 items-center gap-2.5 sm:-mr-6 lg:mr-0">
+        <ThemeToggle className="hidden lg:inline-flex" />
+        <div className="hidden lg:block">
+          <LanguageSwitcher />
+        </div>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label={t('menu')}
+          aria-expanded={open}
+          aria-controls="main-menu"
+          className="group relative inline-flex h-[36px] w-[96px] shrink-0 items-center justify-center transition-transform duration-300 ease-smooth hover:scale-[1.04] sm:h-[40px] sm:w-[107px] lg:hidden"
+        >
+          <Image
+            src={menuFrame}
+            alt=""
+            aria-hidden
+            priority
+            className="pointer-events-none absolute inset-0 h-full w-full object-fill"
+          />
+          <span className="relative z-10 inline-flex items-center gap-1.5 text-[0.72rem] font-semibold uppercase tracking-wide text-ember-soft transition-colors duration-300 group-hover:text-cream">
+            <Menu className="h-[15px] w-[15px]" />
+            {t('menu')}
+          </span>
+        </button>
+      </div>
+    </>
+  );
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
+    <header className="site-header fixed inset-x-0 top-0 z-50">
       <div className={`px-2 transition-all duration-500 ease-smooth sm:px-5 ${scrolled ? 'pt-0' : 'pt-2 sm:pt-3'}`}>
         <div className="relative mx-auto max-w-content">
-          {/* Ornate frame (left cap · stretchable middle · right cap) */}
+          {/* Ornate frame (left cap · stretchable middle · right cap) — sits above the lanterns */}
           <div
-            className={`relative flex w-full items-stretch transition-all duration-500 ease-smooth ${
+            className={`relative z-10 flex w-full items-stretch transition-all duration-500 ease-smooth ${
               scrolled ? 'h-[64px] sm:h-[78px]' : 'h-[74px] sm:h-[92px] lg:h-[100px]'
             }`}
           >
-            <Image src={navLeft} alt="" aria-hidden priority className="h-full w-auto shrink-0" />
+            {/* Frosted glass BEHIND the caps + frame. Inset ~28px so its left/right edges land under
+                the caps' SOLID board (which hides them) but stop short of the caps' transparent outer
+                corners (so it never peeks out past the board art). 28px stays under the board for every
+                bar height (64–100px). The frame/rails hide the top/bottom edges. Fully adaptive. */}
+            {/* Backing behind the frame opening. The light cutout from white_theme has a
+                transparent centre, so keep the glass only under that window — not under
+                the outer ornaments/candles, otherwise the cap reads like a torn rectangle. */}
+            <div className="dark-only pointer-events-none absolute inset-x-[28px] top-[10%] z-0 h-[80%] bg-ink/55 backdrop-blur-[10px]" />
+            {/* Light backing — same logic as dark: a plain rectangle BEHIND the whole frame
+                (z-0), inset so its edges tuck under the caps' board and the rails, and only
+                the frame's transparent window reveals it. No rounding/shadow, so no edge can
+                peek out past the ornaments. */}
+            <div className="light-only pointer-events-none absolute inset-x-[30px] top-[10%] z-0 h-[80%] bg-[linear-gradient(180deg,rgba(255,250,241,0.82),rgba(232,216,190,0.74))] backdrop-blur-[12px]" />
 
+            {/* ---- Light frame: same 3-piece adaptive technique as the dark frame
+                 (fixed-aspect caps · stretchable middle), just its own art + ornaments.
+                 Rendered via .light-only so the swap happens in CSS before paint — no flash. */}
+            {/* Left cap (candles) — fixed aspect, scales with the bar height */}
+            <Image
+              src={navLeftLight}
+              alt=""
+              aria-hidden
+              priority
+              className="light-only relative z-30 -mr-px h-full w-auto shrink-0"
+            />
+
+            {/* Stretchable middle — the frame's window + rails */}
             <div
-              className="relative h-full min-w-0 flex-1"
+              className="light-only relative z-20 h-full min-w-0 flex-1"
+              style={{
+                backgroundImage: `url(${navMidLight.src})`,
+                backgroundSize: '100% 100%',
+                backgroundRepeat: 'no-repeat',
+              }}
+            >
+              {/* Content row — centred in the window opening (identical placement logic to dark) */}
+              <div className="light-navbar-content absolute inset-x-0 top-[20.4%] z-20 flex h-[53.6%] items-center justify-between gap-3 pl-4 pr-3 sm:pl-6 sm:pr-5 lg:px-8">
+                {navRow}
+              </div>
+            </div>
+
+            {/* Right cap (pagoda · sushi) — fixed aspect, scales with the bar height */}
+            <Image
+              src={navRightLight}
+              alt=""
+              aria-hidden
+              priority
+              className="light-only relative z-30 -ml-px h-full w-auto shrink-0"
+            />
+
+            {/* Left cap — fixed aspect, scales with the bar height (same logic in both themes) */}
+            <Image
+              src={navLeft}
+              alt=""
+              aria-hidden
+              priority
+              className="dark-only relative z-30 -mr-px h-full w-auto shrink-0"
+            />
+
+            {/* Stretchable middle — the frame's opening board */}
+            <div
+              className="dark-only relative z-20 h-full min-w-0 flex-1"
               style={{
                 backgroundImage: `url(${navMid.src})`,
                 backgroundSize: '100% 100%',
                 backgroundRepeat: 'no-repeat',
               }}
             >
-              {/* Legibility panel sitting inside the frame opening (upper rectangle) */}
-              <div className="absolute inset-x-[1.5%] top-[12%] h-[40%] rounded-[10px] bg-ink/35 backdrop-blur-[6px]" />
-
-              {/* Content row centered in the opening (upper rectangle) */}
-              <div className="absolute inset-x-0 top-[6%] flex h-[52%] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+              {/* Content row — vertically centred in the frame opening (identical placement both themes) */}
+              <div className="absolute inset-x-0 top-[20.4%] z-20 flex h-[53.6%] items-center justify-between gap-3 pl-4 pr-3 sm:pl-6 sm:pr-5 lg:px-8">
                 <a href="#top" aria-label="Taste Garden" className="relative z-10 flex shrink-0 items-center">
-                  <Logo priority width={180} className="h-[32px] w-auto transition-all duration-500 sm:h-[42px] lg:h-[50px]" />
+                  <LogoMark priority className="h-[26px] w-auto transition-all duration-500 sm:h-[32px] lg:h-[38px]" />
                 </a>
 
-                {/* Desktop inline nav */}
-                <nav className="relative z-10 hidden items-center gap-5 lg:flex xl:gap-7">
-                  {links.map((l) => (
-                    <a
-                      key={l.id}
-                      href={l.href}
-                      className="group relative whitespace-nowrap text-[0.88rem] font-medium tracking-tight text-cream transition-colors duration-300 hover:text-ember"
-                    >
-                      {t(l.id)}
-                      <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-ember transition-all duration-300 ease-smooth group-hover:w-full" />
-                    </a>
-                  ))}
+                {/* Desktop inline nav — absolutely centred on the bar axis */}
+                <nav className="absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-5 lg:flex xl:gap-7">
+                  {links.map((l) => {
+                    const isActive = active === l.href.slice(1);
+                    return (
+                      <a
+                        key={l.id}
+                        href={l.href}
+                        aria-current={isActive ? 'page' : undefined}
+                        className={`group relative whitespace-nowrap text-[0.88rem] font-medium tracking-tight transition-colors duration-300 ${
+                          isActive ? 'text-ember' : 'text-cream hover:text-ember'
+                        }`}
+                      >
+                        {t(l.id)}
+                        <span
+                          className={`absolute -bottom-1.5 left-0 h-px bg-ember transition-all duration-300 ease-smooth ${
+                            isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                          }`}
+                        />
+                      </a>
+                    );
+                  })}
                   <a
                     href="#reservation"
-                    className="group relative whitespace-nowrap text-[0.88rem] font-semibold tracking-tight text-ember transition-colors duration-300 hover:text-ember-soft"
+                    aria-current={active === 'reservation' ? 'page' : undefined}
+                    className={`group relative whitespace-nowrap text-[0.88rem] font-semibold tracking-tight transition-colors duration-300 ${
+                      active === 'reservation' ? 'text-ember' : 'text-cream hover:text-ember'
+                    }`}
                   >
                     {t('reserve')}
-                    <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ember/50 transition-all duration-300 ease-smooth group-hover:bg-ember" />
+                    <span
+                      className={`absolute -bottom-1.5 left-0 h-px bg-ember transition-all duration-300 ease-smooth ${
+                        active === 'reservation' ? 'w-full' : 'w-0 group-hover:w-full'
+                      }`}
+                    />
                   </a>
                 </nav>
 
-                <div className="relative z-10 flex shrink-0 items-center gap-2.5">
+                <div className="relative z-10 -mr-4 flex shrink-0 items-center gap-2.5 sm:-mr-6 lg:mr-0">
+                  <ThemeToggle className="hidden lg:inline-flex" />
                   <div className="hidden lg:block">
                     <LanguageSwitcher />
                   </div>
@@ -110,39 +314,50 @@ export function Header() {
                     aria-label={t('menu')}
                     aria-expanded={open}
                     aria-controls="main-menu"
-                    className="inline-flex items-center gap-2 rounded-full border border-ember/45 bg-ink/40 px-3.5 py-2 text-[0.82rem] font-semibold tracking-tight text-cream transition-colors duration-300 hover:border-ember hover:text-ember lg:hidden"
+                    className="group relative inline-flex h-[36px] w-[96px] shrink-0 items-center justify-center transition-transform duration-300 ease-smooth hover:scale-[1.04] sm:h-[40px] sm:w-[107px] lg:hidden"
                   >
-                    <Menu className="h-[18px] w-[18px]" />
-                    <span>{t('menu')}</span>
+                    <Image src={menuFrame} alt="" aria-hidden priority className="pointer-events-none absolute inset-0 h-full w-full object-fill" />
+                    <span className="relative z-10 inline-flex items-center gap-1.5 text-[0.72rem] font-semibold uppercase tracking-wide text-ember-soft transition-colors duration-300 group-hover:text-cream">
+                      <Menu className="h-[15px] w-[15px]" />
+                      {t('menu')}
+                    </span>
                   </button>
                 </div>
               </div>
             </div>
 
-            <Image src={navRight} alt="" aria-hidden priority className="h-full w-auto shrink-0" />
+            <Image
+              src={navRight}
+              alt=""
+              aria-hidden
+              priority
+              className="dark-only relative z-30 -ml-px h-full w-auto shrink-0"
+            />
           </div>
 
-          {/* Extra hanging lanterns — staggered, lively; anchored just under the central bar */}
+          {/* Hanging lanterns — behind the frame (dark theme only; the light frame has its own ornaments) */}
           <div
-            className={`pointer-events-none absolute inset-x-[16%] top-[80%] z-0 h-0 transition-opacity duration-500 ${
+            className={`dark-only pointer-events-none absolute inset-x-[15%] top-0 z-0 h-full transition-opacity duration-500 ${
               scrolled ? 'opacity-0' : 'opacity-100'
             }`}
             aria-hidden
           >
             {lanterns.map((l, i) => (
-              <span
-                key={i}
-                className={`lantern-sway absolute top-0 block origin-top ${l.hideMobile ? 'hidden sm:block' : ''}`}
-                style={{ left: l.left, marginTop: l.top, animationDuration: `${l.dur}s`, animationDelay: `${l.delay}s` }}
-              >
-                <Image
-                  src={lanternsDeco}
-                  alt=""
-                  width={l.w}
-                  height={l.w}
-                  className="h-auto drop-shadow-[0_8px_14px_rgba(0,0,0,0.5)]"
-                  style={{ width: l.w }}
-                />
+              <span key={i} className={`absolute top-[93%] -translate-x-1/2 ${l.vis}`} style={{ left: l.left }}>
+                <span
+                  className="lantern-sway flex origin-top flex-col items-center"
+                  style={{ animationDuration: `${l.dur}s`, animationDelay: `${l.delay}s` }}
+                >
+                  {/* thin string tucked under the bar's lower edge, down to the lantern */}
+                  <span className={`block w-px bg-gradient-to-b from-ember/0 via-ember/50 to-ember/80 ${l.drop}`} />
+                  <Image
+                    src={lantern}
+                    alt=""
+                    width={72}
+                    height={Math.round(72 / LANTERN_AR)}
+                    className={`h-auto drop-shadow-[0_10px_16px_rgba(0,0,0,0.5)] ${l.img}`}
+                  />
+                </span>
               </span>
             ))}
           </div>
@@ -184,23 +399,29 @@ export function Header() {
           </div>
 
           <nav className="flex flex-1 flex-col justify-center gap-1 px-6">
-            {links.map((l, i) => (
-              <a
-                key={l.id}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                tabIndex={open ? 0 : -1}
-                className="group flex items-baseline gap-4 border-b border-cream/10 py-4 font-display text-3xl text-cream transition-colors duration-300 hover:text-ember"
-                style={{
-                  transform: open ? 'translateY(0)' : 'translateY(14px)',
-                  opacity: open ? 1 : 0,
-                  transition: `transform 0.5s cubic-bezier(0.22,1,0.36,1) ${0.07 * i + 0.12}s, opacity 0.5s ease ${0.07 * i + 0.12}s, color 0.3s ease`,
-                }}
-              >
-                <span className="font-sans text-xs text-ember/70">0{i + 1}</span>
-                {t(l.id)}
-              </a>
-            ))}
+            {links.map((l, i) => {
+              const isActive = active === l.href.slice(1);
+              return (
+                <a
+                  key={l.id}
+                  href={l.href}
+                  onClick={() => setOpen(false)}
+                  tabIndex={open ? 0 : -1}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={`group flex items-baseline gap-4 border-b border-cream/10 py-4 font-display text-3xl transition-colors duration-300 ${
+                    isActive ? 'text-ember' : 'text-cream hover:text-ember'
+                  }`}
+                  style={{
+                    transform: open ? 'translateY(0)' : 'translateY(14px)',
+                    opacity: open ? 1 : 0,
+                    transition: `transform 0.5s cubic-bezier(0.22,1,0.36,1) ${0.07 * i + 0.12}s, opacity 0.5s ease ${0.07 * i + 0.12}s, color 0.3s ease`,
+                  }}
+                >
+                  <span className={`font-sans text-xs ${isActive ? 'text-ember' : 'text-ember/70'}`}>0{i + 1}</span>
+                  {t(l.id)}
+                </a>
+              );
+            })}
           </nav>
 
           <div className="px-6 pb-8">
@@ -208,7 +429,7 @@ export function Header() {
               href="#reservation"
               onClick={() => setOpen(false)}
               tabIndex={open ? 0 : -1}
-              className="group flex w-full items-center justify-center gap-2.5 rounded-full bg-crimson py-4 text-sm font-semibold text-cream transition-all duration-300 hover:-translate-y-0.5 hover:bg-crimson-bright"
+              className="group flex w-full items-center justify-center gap-2.5 rounded-full bg-crimson py-4 text-sm font-semibold text-[#f4ece4] transition-all duration-300 hover:-translate-y-0.5 hover:bg-crimson-bright"
             >
               {t('reserve')}
             </a>
@@ -226,7 +447,10 @@ export function Header() {
 
             <div className="mt-6 flex items-center justify-between border-t border-cream/10 pt-5">
               <span className="text-xs uppercase tracking-eyebrow text-cream/60">{t('language')}</span>
-              <LanguageSwitcher />
+              <div className="flex items-center gap-3">
+                <LanguageSwitcher />
+                <ThemeToggle />
+              </div>
             </div>
           </div>
         </div>

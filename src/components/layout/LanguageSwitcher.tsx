@@ -23,10 +23,14 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
             key={loc}
             type="button"
             aria-current={active ? 'true' : undefined}
-            onClick={() => router.replace(pathname, { locale: loc })}
+            onClick={() => {
+              if (active) return;
+              window.dispatchEvent(new CustomEvent('tastegarden-route-pending'));
+              router.replace(pathname, { locale: loc });
+            }}
             className={`rounded-full px-2.5 py-1 text-xs font-semibold tracking-wide transition-colors duration-300 ${
               active
-                ? 'bg-crimson text-cream'
+                ? 'bg-crimson text-[#f4ece4]'
                 : 'text-cream/70 hover:text-cream'
             }`}
           >

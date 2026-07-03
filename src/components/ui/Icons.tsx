@@ -75,6 +75,15 @@ export function Check(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function Lock(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="6.5" y="10" width="11" height="9" rx="2" />
+      <path d="M8.5 10V7.8a3.5 3.5 0 0 1 7 0V10" />
+    </svg>
+  );
+}
+
 export function Facebook(props: SVGProps<SVGSVGElement>) {
   return (
     <svg {...base} {...props}>
@@ -88,6 +97,42 @@ export function Globe(props: SVGProps<SVGSVGElement>) {
     <svg {...base} {...props}>
       <circle cx="12" cy="12" r="8.5" />
       <path d="M3.5 12h17M12 3.5c2.4 2.3 3.7 5.3 3.7 8.5S14.4 18.2 12 20.5C9.6 18.2 8.3 15.2 8.3 12S9.6 5.8 12 3.5Z" />
+    </svg>
+  );
+}
+
+export function Sun(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8 6 18M18 6l1.8-1.8" />
+    </svg>
+  );
+}
+
+export function Moon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M20 14.5A8 8 0 0 1 9.5 4 7 7 0 1 0 20 14.5Z" />
+    </svg>
+  );
+}
+
+export function Flip(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4 9a8 8 0 0 1 13.7-3.2L20 8" />
+      <path d="M20 4v4h-4" />
+      <path d="M20 15a8 8 0 0 1-13.7 3.2L4 16" />
+      <path d="M4 20v-4h4" />
+    </svg>
+  );
+}
+
+export function ArrowLeft(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M19 12H5M11 6l-6 6 6 6" />
     </svg>
   );
 }

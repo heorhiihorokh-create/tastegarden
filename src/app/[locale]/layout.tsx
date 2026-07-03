@@ -1,32 +1,15 @@
 import type { Metadata } from 'next';
-import { Fraunces, Inter } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { routing, type Locale } from '@/i18n/routing';
 import { SmoothScroll } from '@/components/providers/SmoothScroll';
-import '../globals.css';
-
-const display = Fraunces({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  style: ['normal', 'italic'],
-  variable: '--font-display',
-  display: 'swap',
-});
-
-const sans = Inter({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-sans',
-  display: 'swap',
-});
+import { InitialPageLoader } from '@/components/providers/InitialPageLoader';
 
 type Params = { locale: string };
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'default-no-store';
 
 export async function generateMetadata({
   params,
@@ -57,7 +40,11 @@ export async function generateMetadata({
       description: t('description'),
       images: ['/og.jpg'],
     },
-    icons: { icon: '/favicon.svg' },
+    icons: {
+      icon: '/favicon.ico',
+      shortcut: '/favicon.ico',
+      apple: '/apple-touch-icon.png',
+    },
   };
 }
 
@@ -80,7 +67,6 @@ const restaurantSchema = {
   },
   geo: { '@type': 'GeoCoordinates', latitude: 50.9086, longitude: 3.2168 },
   openingHoursSpecification: [
-    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday'], opens: '11:30', closes: '14:30' },
     { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday'], opens: '18:00', closes: '22:00' },
     { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Friday', 'Saturday'], opens: '11:30', closes: '14:30' },
     { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Friday', 'Saturday'], opens: '18:00', closes: '23:00' },
@@ -104,16 +90,15 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${display.variable} ${sans.variable}`}>
-      <body className="bg-ink text-cream antialiased">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantSchema) }}
-        />
-        <NextIntlClientProvider messages={messages}>
-          <SmoothScroll>{children}</SmoothScroll>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantSchema) }}
+      />
+      <NextIntlClientProvider messages={messages}>
+        <InitialPageLoader />
+        <SmoothScroll>{children}</SmoothScroll>
+      </NextIntlClientProvider>
+    </>
   );
 }

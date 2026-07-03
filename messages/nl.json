@@ -1,18 +1,19 @@
 {
   "meta": {
     "title": "Taste Garden — Aziatische wereldkeuken à volonté in Izegem",
-    "description": "Teppanyaki, wok, sushi en dessert — vers bereid en onbeperkt te genieten. Reserveer je tafel bij Taste Garden, Kortrijksestraat 276, Izegem."
+    "description": "8 keukens en een drankenbar — vers, à volonté en inbegrepen in één formule. Reserveer je tafel bij Taste Garden, Kortrijksestraat 276, Izegem."
   },
   "nav": {
-    "concept": "Concept",
-    "stations": "Keukens",
-    "dishes": "Gerechten",
+    "concept": "Home",
+    "stations": "Keukens & bar",
+    "dishes": "Afhaalmenu",
     "formules": "Formules",
     "practical": "Openingsuren",
     "reserve": "Reserveren",
     "menu": "Menu",
     "close": "Sluiten",
-    "language": "Taal"
+    "language": "Taal",
+    "theme": "Thema wisselen"
   },
   "lang": {
     "label": "Taal",
@@ -24,11 +25,21 @@
     "reserve": "Reserveer",
     "call": "Bel ons"
   },
+  "availability": {
+    "label": "Reserveren tijdelijk niet mogelijk",
+    "close": "Sluiten",
+    "holidayTitle": "We zijn tijdelijk met vakantie",
+    "holidayReserveBody": "Tijdens onze vakantie nemen we geen reservaties aan. Bekijk de aankondiging boven het reservatieformulier voor de juiste periode.",
+    "holidayCallBody": "Tijdens onze vakantie is bellen via de website tijdelijk niet beschikbaar. Bekijk de aankondiging boven het reservatieformulier voor de juiste periode.",
+    "manualTitle": "Vandaag volzet",
+    "manualReserveBody": "Reservaties zijn vandaag gesloten omdat we volzet zijn. Probeer later opnieuw.",
+    "manualCallBody": "We zijn vandaag volzet; bellen via de website is tijdelijk uitgeschakeld. Probeer later opnieuw."
+  },
   "hero": {
-    "eyebrow": "Aziatische belevenis · Izegem",
-    "titleLine1": "Een tuin",
-    "titleLine2": "vol smaken",
-    "subtitle": "Teppanyaki, wok, sushi en dessert — à la minute bereid en onbeperkt te genieten in het hart van Izegem.",
+    "eyebrow": "Wereldse belevenis · Izegem",
+    "titleLine1": "Taste Garden",
+    "titleLine2": "Wereldkeukens",
+    "subtitle": "Onbeperkt genieten van teppanyaki, wok, sushi, desserts én dranken — telkens vers bereid in het hart van Izegem.",
     "ctaPrimary": "Reserveer een tafel",
     "ctaSecondary": "Ontdek de formules",
     "scroll": "Ontdek",
@@ -37,60 +48,201 @@
   "concept": {
     "eyebrow": "Het concept",
     "title": "Eén prijs. De hele wereld op je bord.",
-    "body": "Bij Taste Garden kies je niet — je proeft alles. Aan onze open keukens bereiden de chefs jouw gerechten à la minute, van sissende teppanyaki tot vers gerolde sushi. Schuif aan, neem de tijd en geniet onbeperkt.",
+    "body": "Bij Taste Garden kies je niet één ding — je proeft alles. Aan acht open keukens en onze drankenbar geniet je à volonté: teppanyaki, wok, sushi, dessert, koude en warme voorgerechten, hoofdgerechten en bijgerechten.",
     "stats": [
-      { "value": 100, "suffix": "+", "label": "verse gerechten" },
-      { "value": 4, "suffix": "", "label": "live keukens" },
-      { "value": 1, "suffix": "", "label": "prijs, onbeperkt genieten" }
+      {
+        "value": 100,
+        "suffix": "+",
+        "label": "verse gerechten"
+      },
+      {
+        "value": 8,
+        "suffix": "",
+        "label": "open keukens"
+      },
+      {
+        "value": 1,
+        "suffix": "",
+        "label": "drankenbar"
+      },
+      {
+        "value": 1,
+        "suffix": "",
+        "label": "prijs, onbeperkt genieten"
+      }
     ]
   },
   "stations": {
-    "eyebrow": "De keukens",
-    "title": "Vier keukens, live voor je ogen",
-    "intro": "Loop langs onze open stations en laat je verrassen — elk gerecht wordt vers voor je klaargemaakt.",
+    "eyebrow": "De keukens & bar",
+    "title": "8 keukens. 1 drankenbar. Live voor je ogen",
+    "intro": "Wandel langs onze open stations en drankenbar — van teppanyaki, wok en sushi tot warme gerechten, dessert en je favoriete drank.",
     "items": [
       {
         "id": "teppanyaki",
         "index": "01",
         "name": "Teppanyaki",
-        "tagline": "Van de gloeiende plaat",
-        "description": "Op de hete teppan bakt de chef wagyu, gamba's en groenten — krokant van buiten, boterzacht van binnen."
+        "tagline": "Van de hete plaat",
+        "description": "Kies je favorieten en laat ze à la minute bakken op de teppan: vol geur, hitte en smaak."
       },
       {
         "id": "wok",
         "index": "02",
         "name": "Wok",
-        "tagline": "Jij kiest, de chef roerbakt",
-        "description": "Stel je eigen schotel samen met verse ingrediënten en sauzen. De chef roerbakt alles op hoog vuur tot perfectie."
+        "tagline": "Jij kiest, wij wokken",
+        "description": "Stel je bord samen met groenten, saus en garnituur; de chef roerbakt alles op hoog vuur."
       },
       {
         "id": "sushi",
         "index": "03",
-        "name": "Sushi bar",
-        "tagline": "De hele avond vers gerold",
-        "description": "Maki, nigiri en California rolls, doorlopend vers bereid aan onze sushibar."
+        "name": "Sushibar",
+        "tagline": "Vers van de sushibar",
+        "description": "Maki, nigiri en rolls om licht te starten of tussendoor nog iets fris te proeven."
       },
       {
         "id": "dessert",
         "index": "04",
-        "name": "Dessert & ijs",
-        "tagline": "De zoete finale",
-        "description": "Fijne patisserie, vers fruit en een onbeperkte ijsbar om af te sluiten in stijl."
+        "name": "Dessertbuffet",
+        "tagline": "De zoete afsluiter",
+        "description": "Rond je bezoek af met dessert, fruit en ijs: klein proeven of nog één keer royaal genieten."
+      },
+      {
+        "id": "cold-starters",
+        "index": "05",
+        "name": "Koude voorgerechten",
+        "tagline": "Fris beginnen",
+        "description": "Lichte koude hapjes om je maaltijd rustig te openen of je bord tussendoor op te frissen."
+      },
+      {
+        "id": "warm-starters",
+        "index": "06",
+        "name": "Warme voorgerechten",
+        "tagline": "Krokant en royaal",
+        "description": "Gestoofde garnalen, gebakken rode vis, frietjes, krokante rolletjes en nuggets — elk warm voorgerecht in z’n eigen buffetvak."
+      },
+      {
+        "id": "warm-mains",
+        "index": "07",
+        "name": "Warme hoofdgerechten",
+        "tagline": "Royaal warm buffet",
+        "description": "Hartige hoofdgerechten om te combineren zoals jij het wil, van mild tot pittig."
+      },
+      {
+        "id": "warm-sides",
+        "index": "08",
+        "name": "Warme bijgerechten",
+        "tagline": "De perfecte aanvulling",
+        "description": "Warme bijgerechten die je bord compleet maken, eenvoudig te combineren met wok, grill of buffet."
+      },
+      {
+        "id": "drinks-bar",
+        "index": "09",
+        "name": "Drankenbar",
+        "tagline": "Dranken inbegrepen",
+        "description": "Frisdrank, bier van het vat, huiswijn, koffie en thee horen bij je formule."
       }
     ]
   },
   "dishes": {
-    "eyebrow": "Signatuur",
-    "title": "Een greep uit wat je proeft",
-    "intro": "Vers, gul en met zorg bereid — avond na avond.",
-    "captions": [
-      "Teppanyaki wagyu",
-      "Wok van het moment",
-      "Gedeelde tafel, Aziatische klassiekers",
-      "Dessert van het huis",
-      "Onder de lampions",
-      "Vers van de bar"
-    ]
+    "eyebrow": "Afhaalmenu",
+    "title": "Kies je favorieten voor thuis",
+    "intro": "Van pikante soep tot wokklassiekers — bekijk het volledige afhaalmenu en kies eenvoudig per categorie.",
+    "dishCount": "{count, plural, one {# gerecht} other {# gerechten}}",
+    "categories": [
+      {
+        "id": "soep",
+        "index": "01",
+        "title": "Soep",
+        "items": [
+          {
+            "name": "Pikante soep",
+            "price": "€5,00"
+          },
+          {
+            "name": "Kreeften soep",
+            "price": "€6,00"
+          }
+        ]
+      },
+      {
+        "id": "voorgerechten",
+        "index": "02",
+        "title": "Voorgerechten",
+        "items": [
+          {
+            "name": "Mini loempia's",
+            "price": "€4,50"
+          },
+          {
+            "name": "Kipnuggets",
+            "price": "€5,00"
+          },
+          {
+            "name": "Inktvisringen",
+            "price": "€5,50"
+          },
+          {
+            "name": "Gepaneerde garnalen",
+            "price": "€7,50"
+          },
+          {
+            "name": "Mix sushi (10 stuks)",
+            "price": "€8,00"
+          }
+        ]
+      },
+      {
+        "id": "hoofdgerechten",
+        "index": "03",
+        "title": "Hoofdgerechten",
+        "items": [
+          {
+            "name": "Nasi goreng met kip",
+            "price": "€11,00"
+          },
+          {
+            "name": "Bami goreng met kip",
+            "price": "€11,00"
+          },
+          {
+            "name": "Gefrituurde kip in deeg",
+            "price": "€11,00"
+          },
+          {
+            "name": "Eend in sinaasappelsaus",
+            "price": "€16,50"
+          },
+          {
+            "name": "Garnalen in lookboter",
+            "price": "€17,50"
+          },
+          {
+            "name": "Chili scampi's met 5 kruiden",
+            "price": "€18,50"
+          },
+          {
+            "name": "Champignons met cocktailsaus",
+            "price": "€10,00"
+          },
+          {
+            "name": "Kip gerechten",
+            "price": "€11,00"
+          },
+          {
+            "name": "Rundvlees gerechten",
+            "price": "€13,00"
+          },
+          {
+            "name": "Garnaal gerechten",
+            "price": "€17,00"
+          }
+        ]
+      }
+    ],
+    "notes": {
+      "title": "Sauzen naar keuze",
+      "sauces": "Saus van de Chef · Curry saus (pikant) · Zoetzure saus · Pikante saus · Gonbao saus (licht pikant)",
+      "veg": "Inclusief groenten, ook mogelijk met sojascheuten (op aanvraag)"
+    }
   },
   "formules": {
     "eyebrow": "Formules",
@@ -110,36 +262,82 @@
         "time": "11u30 – 14u30",
         "adults": 25,
         "kids": 17,
-        "under5": 5.5
+        "under5": 5.5,
+        "kitchens": [
+          "2 soorten soepen",
+          "Koude voorgerechten",
+          "Sushibar",
+          "Warme voorgerechten",
+          "Warme hoofdgerechten",
+          "Warme bijgerechten",
+          "Dessertbuffet"
+        ]
       },
       {
         "id": "diner",
         "name": "Diner",
         "days": "Elke avond · zon- & feestdagen",
-        "time": "vanaf 18u00",
+        "time": "18u00 – 22u00",
         "adults": 43,
         "kids": 24,
         "under5": 5.5,
-        "featured": true
+        "featured": true,
+        "kitchens": [
+          "2 soorten soepen",
+          "Koude voorgerechten",
+          "Sushibar",
+          "Warme voorgerechten",
+          "Warme hoofdgerechten",
+          "Warme bijgerechten",
+          "Teppanyaki",
+          "Dessertbuffet"
+        ]
       }
     ],
     "includedTitle": "Inbegrepen",
-    "included": ["Frisdranken", "Bier van het vat", "Huiswijn", "Koffie & thee"],
+    "included": [
+      "Frisdranken",
+      "Bier van het vat",
+      "Huiswijn",
+      "Koffie & thee"
+    ],
     "specialTitle": "Feest- & themamenu's",
     "special": [
-      { "id": "nieuwjaar", "name": "Oudejaarsavond", "date": "31 december", "adults": 78, "kids": 39, "under5": 15 },
-      { "id": "feestdagen", "name": "Feestdagenmenu", "date": "24–25 dec · 1 jan", "adults": 58, "kids": 29, "under5": 13 }
+      {
+        "id": "nieuwjaar",
+        "name": "Oudejaarsavond",
+        "date": "31 december",
+        "adults": 78,
+        "kids": 39,
+        "under5": 15
+      },
+      {
+        "id": "feestdagen",
+        "name": "Feestdagenmenu",
+        "date": "24–25 dec · 1 jan",
+        "adults": 58,
+        "kids": 29,
+        "under5": 13
+      }
     ],
     "birthday": {
-      "title": "Jarig deze week?",
-      "body": "Vier je verjaardag bij ons en geniet van €15 korting wanneer je met 3 of meer volwassenen komt — geldig tot 3 dagen na je verjaardag."
+      "title": "Jarig?",
+      "body": "Bent u jarig op de dag zelf, of 3 dagen voor of na de dag dat u komt eten? Dan betaalt u slechts € 15,00, op voorwaarde dat u vergezeld bent door minstens 3 andere volwassenen — op vertoon van uw identiteitskaart."
+    },
+    "details": {
+      "flipHint": "Tik om te zien wat inbegrepen is",
+      "backTitle": "Inbegrepen in je formule",
+      "kitchensTitle": "Onbeperkt aan elke keuken",
+      "drinksTitle": "Dranken inbegrepen",
+      "alaMinute": "Alles à la minute · zoveel je wil",
+      "back": "Terug naar de prijs"
     },
     "note": "Reserveren aanbevolen, zeker voor feest- en themadagen."
   },
   "ambiance": {
     "eyebrow": "De sfeer",
-    "quote": "Waar de gezelligheid van een tuin samenkomt met de smaken van Azië.",
-    "body": "Warme lampions, open keukens en de geur van de teppan. Taste Garden is een avond uit — voor een etentje met vrienden, familie of dat ene speciale moment."
+    "quote": "À volonté genieten bij Taste Garden",
+    "body": "Bij de wereldkeuken Taste Garden in Izegem kunt u à volonté genieten van een uitgebreide keuze in eten en drinken — frisdranken, bier van de tap, huiswijnen, koffie en thee — voor een vaste prijs. Wij werken in buffetvorm, wat betekent dat u zelf uw eten en drinken kunt nemen."
   },
   "practical": {
     "eyebrow": "Praktisch",
@@ -148,28 +346,87 @@
     "today": "Vandaag",
     "openNow": "Nu geopend",
     "closedNow": "Nu gesloten",
-    "hours": [
-      { "day": "Maandag", "value": "Gesloten *" },
-      { "day": "Dinsdag — donderdag", "value": "11u30–14u30 · 18u00–22u00" },
-      { "day": "Vrijdag — zaterdag", "value": "11u30–14u30 · 18u00–23u00" },
-      { "day": "Zon- & feestdagen", "value": "11u30–16u00 · 18u00–22u00" }
+    "closed": "Gesloten",
+    "notReservableLabel": "niet reserveerbaar",
+    "lunchLabel": "Lunch",
+    "dinnerLabel": "Diner",
+    "rulesTitle": "Belangrijk voor je reservatie",
+    "infoLabel": "Goed om te weten",
+    "focusRule": {
+      "title": "Dinsdag–donderdag",
+      "body": "Op dinsdag, woensdag en donderdag kan je enkel ’s avonds reserveren.",
+      "holidayLabel": "Feestdag",
+      "holiday": "Valt een feestdag op maandag? Dan zijn we maandag open en is dinsdag gesloten."
+    },
+    "rules": [
+      {
+        "title": "Lunchdagen",
+        "body": "Lunch is enkel mogelijk op vrijdag, zaterdag, zondag en feestdagen."
+      },
+      {
+        "title": "Dinsdag–donderdag",
+        "body": "Op dinsdag, woensdag en donderdag kan je enkel ’s avonds reserveren."
+      },
+      {
+        "title": "Feestdag op maandag",
+        "body": "Dan zijn we maandag open en is dinsdag gesloten."
+      }
     ],
-    "hoursNote": "* Wel open op feestdagen",
+    "hours": [
+      {
+        "day": "Maandag",
+        "closed": true
+      },
+      {
+        "day": "Dinsdag — donderdag",
+        "lunch": "11u30–14u30",
+        "lunchLocked": true,
+        "dinner": "18u00–22u00"
+      },
+      {
+        "day": "Vrijdag — zaterdag",
+        "lunch": "11u30–14u30",
+        "dinner": "18u00–23u00"
+      },
+      {
+        "day": "Zon- & feestdagen",
+        "lunch": "11u30–16u00",
+        "dinner": "18u00–22u00"
+      }
+    ],
+    "lunchNote": "Lunch enkel op vrijdag, zaterdag, zon- & feestdagen — andere dagen enkel ’s avonds.",
+    "hoursNote": "Op maandag gesloten, behalve op feestdagen.",
     "addressTitle": "Adres",
     "address": "Kortrijksestraat 276\n8870 Izegem",
     "directions": "Routebeschrijving",
     "contactTitle": "Contact",
     "phone1": "051 30 38 88",
     "phone2": "0460 97 30 88",
-    "call": "Bel ons"
+    "call": "Bel ons",
+    "callHint": "Tik op een nummer om te bellen"
   },
   "reservation": {
     "eyebrow": "Reserveren",
     "title": "Reserveer je tafel",
     "intro": "Laat je gegevens achter — we bevestigen je reservatie zo snel mogelijk. Liever telefonisch? Bel ons gerust.",
+    "rulesTitle": "Dinsdag–donderdag",
+    "infoLabel": "Goed om te weten",
+    "holidayLabel": "Feestdag",
+    "rules": [
+      "Op dinsdag, woensdag en donderdag kan je enkel ’s avonds reserveren vanaf 18u00.",
+      "Feestdag op maandag? Dan zijn we maandag open en is dinsdag gesloten."
+    ],
     "form": {
       "date": "Datum",
       "time": "Tijdstip",
+      "chooseTime": "Kies een tijdstip",
+      "chooseDate": "Kies eerst een datum",
+      "closedDay": "Die dag gesloten",
+      "holidayBlockedDate": "Gesloten wegens vakantie op deze datum",
+      "afterHolidayClosed": "Gesloten: dinsdag na een feestdag op maandag",
+      "lunchUnavailable": "Lunch niet mogelijk op deze datum",
+      "invalidTime": "Kies een geldig tijdstip",
+      "noTimes": "Geen tijden meer",
       "service": "Dienst",
       "lunch": "Lunch",
       "dinner": "Diner",
@@ -193,10 +450,17 @@
     "error": "Er ging iets mis. Bel ons gerust op 051 30 38 88.",
     "phoneCta": "Of bel 051 30 38 88",
     "required": "Dit veld is verplicht",
-    "invalidEmail": "Vul een geldig e-mailadres in"
+    "invalidEmail": "Vul een geldig e-mailadres in",
+    "closedBadge": "Vandaag volzet",
+    "closedTitle": "Reservaties vandaag gesloten",
+    "closedBody": "We zijn vandaag volzet en nemen tijdelijk geen nieuwe reservaties aan.",
+    "closedHint": "Reserveren en bellen via de website zijn tijdelijk geblokkeerd",
+    "holidayClosedBadge": "Vakantie",
+    "holidayClosedTitle": "Tijdelijk met vakantie",
+    "holidayClosedBody": "Tijdens onze vakantie nemen we geen reservaties aan. De aankondiging hierboven toont de juiste periode."
   },
   "footer": {
-    "tagline": "Aziatische wereldkeuken à volonté in het hart van Izegem.",
+    "tagline": "Wereldkeuken à volonté in het hart van Izegem.",
     "openingHours": "Openingsuren",
     "visit": "Bezoek ons",
     "follow": "Volg ons",

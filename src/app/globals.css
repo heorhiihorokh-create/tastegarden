@@ -2,11 +2,420 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --ink: #14100e;
-  --crimson: #c1272d;
-  --ember: #d8a24a;
-  --cream: #f4ece4;
+@keyframes availability-toast-in {
+  0% {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translate3d(0, 18px, 0) scale(0.975);
+  }
+  58% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, -3px, 0) scale(1.006);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.availability-toast {
+  pointer-events: none;
+  transform-origin: right top;
+  will-change: opacity, transform, filter;
+}
+
+.availability-toast > div {
+  pointer-events: auto;
+}
+
+.availability-toast > div::after {
+  content: '';
+  position: absolute;
+  inset: -45% auto -45% -35%;
+  width: 34%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.18),
+    rgb(var(--ember-soft) / 0.16),
+    transparent
+  );
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-80%) rotate(12deg);
+}
+
+.availability-toast--entering {
+  animation: availability-toast-in 0.56s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.availability-toast--entering > div::after {
+  animation: availability-toast-sheen 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+}
+
+@keyframes availability-toast-sheen {
+  0% {
+    opacity: 0;
+    transform: translateX(-90%) rotate(12deg);
+  }
+  28% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(430%) rotate(12deg);
+  }
+}
+
+@keyframes availability-toast-out {
+  0% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translate3d(0, 12px, 0) scale(0.985);
+  }
+}
+
+.availability-toast--leaving {
+  pointer-events: none;
+  animation: availability-toast-out 0.42s cubic-bezier(0.55, 0, 0.1, 1) both;
+}
+
+.availability-toast--leaving > div::after {
+  animation: none;
+}
+
+.route-loader {
+  --route-loader-bg: rgba(16, 12, 10, 0.28);
+  --route-loader-glow: rgba(216, 162, 74, 0.22);
+  color: rgb(var(--ember));
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(216, 162, 74, 0.13), transparent 24rem),
+    linear-gradient(180deg, #fffaf1 0%, #f8ecdc 100%);
+  will-change: opacity, filter;
+}
+
+[data-theme='light'] .route-loader {
+  --route-loader-bg: rgba(255, 250, 242, 0.36);
+  --route-loader-glow: rgba(205, 135, 28, 0.18);
+}
+
+.route-loader--entering {
+  animation: route-loader-screen-in 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.route-loader--leaving {
+  animation: route-loader-screen-out 0.36s cubic-bezier(0.55, 0, 0.1, 1) both;
+}
+
+.initial-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  pointer-events: none;
+  will-change: opacity, filter;
+}
+
+/* No JS = nothing will ever hide the loader — never show it over the content. */
+html:not(.js) .initial-loader {
+  display: none;
+}
+
+/* The FIRST-load loader must be fully opaque from the very first frame — a
+   fade-in here lets the half-streamed page show through while the main thread
+   is busy (looks like a broken site flashing before the loader). */
+.initial-loader--visible {
+  opacity: 1;
+}
+
+.initial-loader--leaving {
+  animation: route-loader-screen-out 0.36s cubic-bezier(0.55, 0, 0.1, 1) both;
+}
+
+.route-loader__bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  transform-origin: left center;
+  background:
+    linear-gradient(90deg, transparent, rgb(var(--ember-soft)), rgb(var(--crimson-bright)), rgb(var(--ember-soft))),
+    linear-gradient(90deg, rgb(var(--ember)), rgb(var(--crimson)));
+  box-shadow:
+    0 0 18px rgb(var(--ember) / 0.45),
+    0 0 32px rgb(var(--crimson) / 0.22);
+}
+
+.route-loader--entering .route-loader__bar {
+  animation: route-loader-bar 1.15s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.route-loader--leaving .route-loader__bar {
+  animation: route-loader-bar-finish 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.route-loader__veil {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 42%, var(--route-loader-glow), transparent 18rem),
+    linear-gradient(180deg, var(--route-loader-bg), transparent 42%);
+  opacity: 0;
+  backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
+}
+
+.route-loader--entering .route-loader__veil {
+  animation: route-loader-veil-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.16s both;
+}
+
+.route-loader--leaving .route-loader__veil {
+  animation: route-loader-veil-out 0.34s ease both;
+}
+
+.route-loader__mark {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  opacity: 0.88;
+  filter: drop-shadow(0 0 18px rgb(var(--ember) / 0.3));
+}
+
+.route-loader__mark span {
+  display: block;
+  width: clamp(2.2rem, 5vw, 4.2rem);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, currentColor);
+  opacity: 0.42;
+}
+
+.route-loader__mark span:last-child {
+  transform: scaleX(-1);
+}
+
+.route-loader__mark i {
+  position: relative;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid rgb(var(--ember) / 0.34);
+  border-radius: 999px;
+  background: rgb(var(--ink-raise) / 0.5);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 14px 40px -22px rgb(var(--ember) / 0.82);
+}
+
+.route-loader__mark i::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.55rem;
+  height: 0.55rem;
+  border: 1px solid currentColor;
+  transform: translate(-50%, -50%) rotate(45deg);
+  animation: route-loader-mark 1.2s ease-in-out infinite;
+}
+
+@keyframes route-loader-bar {
+  0% {
+    transform: scaleX(0.12);
+    opacity: 0.34;
+  }
+  48% {
+    transform: scaleX(0.72);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(0.94);
+    opacity: 0.72;
+  }
+}
+
+@keyframes route-loader-bar-finish {
+  from {
+    transform: scaleX(0.72);
+    opacity: 1;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+
+@keyframes route-loader-veil-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes route-loader-veil-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes route-loader-mark {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: translate(-50%, -50%) rotate(45deg) scale(0.86);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(45deg) scale(1.06);
+  }
+}
+
+.brand-loader {
+  display: grid;
+  min-height: min(100svh, 100vh);
+  place-items: center;
+  background: #fff;
+  color: #c1272d;
+}
+
+.brand-loader--screen {
+  min-height: 100svh;
+}
+
+.brand-loader__stage {
+  position: relative;
+  display: grid;
+  width: 80px;
+  min-height: 91px;
+  place-items: center;
+  isolation: isolate;
+}
+
+.brand-loader__logo {
+  position: relative;
+  width: 80px;
+  height: auto;
+  opacity: 1;
+  animation: brand-loader-fade-logo 1.4s ease-in-out infinite both;
+  user-select: none;
+}
+
+@keyframes route-loader-screen-in {
+  from {
+    opacity: 0;
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes route-loader-screen-out {
+  from {
+    opacity: 1;
+    filter: blur(0);
+  }
+  to {
+    opacity: 0;
+    filter: blur(8px);
+  }
+}
+
+@keyframes brand-loader-fade-logo {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 639px) {
+  .availability-toast {
+    transform-origin: center bottom;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .availability-toast {
+    animation: none;
+  }
+
+  .availability-toast > div::after {
+    animation: none;
+  }
+
+  .route-loader__bar,
+  .route-loader__veil,
+  .route-loader__mark i::before,
+  .route-loader,
+  .brand-loader__logo {
+    animation: none !important;
+  }
+}
+
+/* ---- Theme tokens (space-separated RGB channels for Tailwind alpha support) ----
+   Defined per data-theme so a nested [data-theme="dark"] (e.g. the photographic
+   hero/ambiance sections) stays dark even when the page is in light mode. */
+:root,
+[data-theme='dark'] {
+  --ink: 20 16 14; /* #14100E */
+  --ink-deep: 13 10 8; /* #0D0A08 */
+  --ink-soft: 30 23 19; /* #1E1713 */
+  --ink-raise: 37 28 23; /* #251C17 */
+  --crimson: 193 39 45; /* #C1272D */
+  --crimson-deep: 142 27 32; /* #8E1B20 */
+  --crimson-bright: 224 59 51; /* #E03B33 */
+  --ember: 216 162 74; /* #D8A24A */
+  --ember-soft: 232 201 138; /* #E8C98A */
+  --ember-deep: 169 118 43; /* #A9762B */
+  --cream: 244 236 228; /* #F4ECE4 */
+  --cream-dim: 216 202 187; /* #D8CABB */
+  --muted: 168 152 138; /* #A8988A */
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  --ink: 250 244 235; /* page bg — warm cream #FAF4EB */
+  --ink-deep: 236 226 211; /* deeper surface #ECE2D3 */
+  --ink-soft: 244 236 224; /* #F4ECE0 */
+  --ink-raise: 255 252 247; /* raised cards #FFFCF7 */
+  --crimson: 222 24 40; /* #DE1828 — brighter restaurant red, still premium */
+  --crimson-deep: 170 22 32; /* #AA1620 — readable depth tone */
+  --crimson-bright: 242 51 49; /* #F23331 — vivid hover/accent */
+  --ember: 205 135 28; /* #CD871C — burnished gold, readable without neon */
+  --ember-soft: 226 172 72; /* #E2AC48 — soft restaurant gold */
+  --ember-deep: 151 83 15; /* #97530F — lacquered depth for contrast */
+  --cream: 42 30 22; /* primary text — warm dark #2A1E16 */
+  --cream-dim: 92 73 58; /* muted text #5C493A */
+  --muted: 122 106 92; /* #7A6A5C */
+  color-scheme: light;
+}
+
+/* Per-theme element visibility — swap themed art (used outside pinned-dark sections) */
+[data-theme='dark'] .light-only {
+  display: none !important;
+}
+[data-theme='light'] .dark-only {
+  display: none !important;
 }
 
 @layer base {
@@ -18,12 +427,15 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
-    background-color: var(--ink);
+    background-color: rgb(var(--ink));
   }
 
   body {
-    background-color: var(--ink);
-    color: var(--cream);
+    background-color: rgb(var(--ink));
+    color: rgb(var(--cream));
+    transition:
+      background-color 0.45s ease,
+      color 0.45s ease;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -31,9 +443,38 @@
     overflow-x: hidden;
   }
 
+  [data-theme='light'] body {
+    background:
+      radial-gradient(circle at 18% 16%, rgba(205, 135, 28, 0.13), transparent 32rem),
+      radial-gradient(circle at 82% 36%, rgba(222, 24, 40, 0.075), transparent 34rem),
+      linear-gradient(180deg, #fbf5ec 0%, #f7efe3 46%, #fbf4eb 100%);
+  }
+
+  .admin-root {
+    --font-sans: var(--font-admin-sans);
+    --font-display: var(--font-admin-sans);
+    background: #f4f4f5;
+    color: #18181b;
+    font-family: var(--font-admin-sans), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    overflow-x: auto;
+  }
+
+  .admin-root h1,
+  .admin-root h2,
+  .admin-root h3 {
+    font-family: var(--font-admin-sans), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    letter-spacing: normal;
+  }
+
   ::selection {
     background-color: rgba(193, 39, 45, 0.85);
     color: #fff;
+  }
+
+  /* Light theme: deeper crimson so selected text stays legible on cream */
+  [data-theme='light'] ::selection {
+    background-color: rgba(176, 30, 38, 0.9);
+    color: #fff8ef;
   }
 
   /* Keyboard-only focus: a soft brand glow + subtle lift — never a hard ring/outline */
@@ -43,6 +484,14 @@
       0 0 0 1px rgba(216, 162, 74, 0.35),
       0 0 22px -4px rgba(216, 162, 74, 0.5);
     border-radius: 6px;
+  }
+
+  /* Light theme: the pale-gold glow vanishes on cream — same hairline+glow shape,
+     just a deeper ember so it reads (NO hard ring — user dislikes rings). */
+  [data-theme='light'] :focus-visible {
+    box-shadow:
+      0 0 0 1px rgba(122, 84, 28, 0.5),
+      0 0 18px -2px rgba(122, 84, 28, 0.55);
   }
 
   /* Mouse / touch interactions show no focus styling at all */
@@ -76,6 +525,277 @@
     @apply inline-flex items-center gap-2 text-[0.72rem] font-medium uppercase tracking-eyebrow text-ember;
   }
 
+  .section-emblem {
+    @apply flex items-center gap-2 text-ember/80;
+  }
+
+  .section-emblem > span {
+    width: 18px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, currentColor);
+    opacity: 0.45;
+  }
+
+  .section-emblem > span:last-child {
+    transform: scaleX(-1);
+  }
+
+  .section-emblem svg {
+    width: 30px;
+    height: 30px;
+    filter: drop-shadow(0 0 14px rgba(216, 162, 74, 0.16));
+  }
+
+  .admin-nav-icon {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 1rem;
+    max-width: 1rem;
+    max-height: 1rem;
+  }
+
+  .admin-editor-section {
+    content-visibility: auto;
+    contain-intrinsic-size: 18rem;
+  }
+
+  .brand-logo-boost {
+    transition:
+      filter 0.45s ease,
+      opacity 0.45s ease;
+  }
+
+  /* Light theme: the bright-gold glow washes out on cream — deepen it so the emblem reads */
+  [data-theme='light'] .section-emblem svg {
+    filter: drop-shadow(0 0 12px rgba(151, 83, 15, 0.24));
+  }
+
+  [data-theme='light'] .hero-title-primary {
+    color: #fff4e6;
+    text-shadow:
+      0 1px 0 rgba(53, 18, 7, 0.42),
+      0 5px 18px rgba(12, 5, 3, 0.52),
+      0 16px 44px rgba(12, 5, 3, 0.34);
+  }
+
+  [data-theme='light'] .hero-title-accent {
+    color: #ffd42a;
+    background: none;
+    text-shadow:
+      0 1px 0 rgba(72, 30, 2, 0.18),
+      0 3px 10px rgba(18, 7, 2, 0.28),
+      0 0 26px rgba(255, 210, 40, 0.38);
+  }
+
+  [data-theme='light'] .hero-eyebrow {
+    background: transparent;
+    box-shadow: none;
+    color: #ffc342;
+    filter: none;
+    font-weight: 620;
+    text-shadow: 0 1px 2px rgba(31, 10, 3, 0.3);
+  }
+
+  [data-theme='light'] .hero-eyebrow-line {
+    background: linear-gradient(90deg, transparent, #ffc342);
+  }
+
+  [data-theme='light'] .hero-copy {
+    color: rgba(255, 245, 232, 0.9);
+    text-shadow:
+      0 1px 0 rgba(48, 18, 7, 0.32),
+      0 4px 14px rgba(12, 5, 3, 0.5);
+  }
+
+  [data-theme='light'] .hero-scroll-cue {
+    color: rgba(255, 246, 234, 0.86);
+    text-shadow:
+      0 1px 0 rgba(44, 16, 6, 0.36),
+      0 4px 12px rgba(12, 5, 3, 0.46);
+  }
+
+  [data-theme='light'] .hero-scroll-cue:hover {
+    color: #fff8ee;
+  }
+
+  [data-theme='light'] .hero-scroll-frame {
+    border-color: rgba(255, 246, 234, 0.56);
+    box-shadow:
+      0 0 0 1px rgba(255, 246, 234, 0.08),
+      0 6px 18px rgba(12, 5, 3, 0.28);
+  }
+
+  [data-theme='light'] .hero-scroll-dot {
+    background: #fff6ea;
+    box-shadow: 0 0 12px rgba(255, 246, 234, 0.55);
+  }
+
+  [data-theme='light'] .hero-primary-cta {
+    background-image: linear-gradient(135deg, #f12d32 0%, #d71929 48%, #a90f1b 100%);
+    box-shadow:
+      0 18px 38px -22px rgba(180, 18, 28, 0.72),
+      inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  }
+
+  [data-theme='light'] .hero-secondary-cta {
+    border-color: rgba(92, 55, 30, 0.2);
+    background:
+      linear-gradient(180deg, rgba(255, 250, 242, 0.72), rgba(245, 224, 195, 0.42));
+    color: rgba(41, 25, 17, 0.88);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.62),
+      0 14px 34px -26px rgba(79, 35, 16, 0.42);
+  }
+
+  [data-theme='light'] .hero-secondary-cta:hover {
+    border-color: rgba(185, 106, 22, 0.42);
+    color: #8f4d10;
+  }
+
+  [data-theme='light'] .holiday-announcement-card {
+    border-color: rgba(151, 83, 15, 0.14);
+  }
+
+  [data-theme='light'] .holiday-announcement-card__inner {
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      inset 0 -1px 0 rgba(97, 54, 21, 0.16);
+  }
+
+  [data-theme='light'] .brand-logo-boost {
+    filter: saturate(1.42) brightness(1.15) contrast(1.1)
+      drop-shadow(0 8px 12px rgba(154, 88, 10, 0.18));
+  }
+
+  [data-theme='light'] .bg-crimson {
+    background-color: rgb(var(--crimson));
+    background-image: linear-gradient(
+      135deg,
+      rgb(var(--crimson-bright) / 0.98),
+      rgb(var(--crimson) / 1) 46%,
+      rgb(var(--crimson-deep) / 0.98)
+    );
+    box-shadow:
+      0 16px 34px -20px rgb(var(--crimson) / 0.78),
+      inset 0 1px 0 rgb(255 255 255 / 0.22);
+  }
+
+  [data-theme='light'] .hover\:bg-crimson-bright:hover {
+    background-color: rgb(var(--crimson-bright));
+    background-image: linear-gradient(
+      135deg,
+      rgb(255 76 69 / 1),
+      rgb(var(--crimson-bright) / 1) 48%,
+      rgb(var(--crimson) / 1)
+    );
+  }
+
+  /* Keep the ornate navbar calm in light mode. The brighter restaurant palette
+     is for the page content/CTAs, not for the framed navigation art itself. */
+  [data-theme='light'] .site-header {
+    --crimson: 193 39 45; /* original brand red */
+    --crimson-deep: 142 27 32;
+    --crimson-bright: 206 30 41;
+    --ember: 154 102 32;
+    --ember-soft: 188 132 48;
+    --ember-deep: 122 84 28;
+  }
+
+  [data-theme='light'] .site-header .brand-logo-boost {
+    filter: none;
+  }
+
+  [data-theme='light'] .site-header .bg-crimson {
+    background-color: rgb(var(--crimson));
+    background-image: none;
+    box-shadow: none;
+  }
+
+  [data-theme='light'] .site-header .hover\:bg-crimson-bright:hover {
+    background-color: rgb(var(--crimson-bright));
+    background-image: none;
+  }
+
+  @media (max-width: 1023px) {
+    [data-theme='light'] .site-header .light-navbar-content > div {
+      transform: translateX(clamp(1.05rem, 4.4vw, 1.35rem));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    [data-theme='light'] .site-header .light-navbar-content > nav {
+      left: calc(50% - 0.35rem);
+    }
+
+    [data-theme='light'] .site-header .light-navbar-content > div {
+      transform: translateX(0.45rem);
+    }
+  }
+
+  /* Per-kitchen accent (Stations): pick the dark- or light-tuned hue from the inline
+     custom props so the accent stays legible on cream without changing the dark theme. */
+  [data-kitchen-scene] {
+    --kitchen-accent: var(--kitchen-accent-dark);
+  }
+  [data-theme='light'] [data-kitchen-scene] {
+    --kitchen-accent: var(--kitchen-accent-light);
+  }
+
+  /* Kitchen photos: keep the restaurant mood, but do not bury the generated food art.
+     The card text sits outside the image, so light theme needs almost no dark scrim. */
+  .kitchen-photo-scrim {
+    background: linear-gradient(
+      to top,
+      rgba(8, 6, 5, 0.34),
+      rgba(8, 6, 5, 0.1) 52%,
+      rgba(8, 6, 5, 0.02)
+    );
+  }
+
+  [data-theme='light'] .kitchen-photo-scrim {
+    background: linear-gradient(
+      to top,
+      rgba(8, 6, 5, 0.12),
+      rgba(8, 6, 5, 0.025) 54%,
+      transparent
+    );
+  }
+
+  .kitchen-edge-scrim-left {
+    background: linear-gradient(to right, rgba(8, 6, 5, 0.3), rgba(8, 6, 5, 0.08), transparent);
+  }
+
+  .kitchen-edge-scrim-right {
+    background: linear-gradient(to left, rgba(8, 6, 5, 0.3), rgba(8, 6, 5, 0.08), transparent);
+  }
+
+  [data-theme='light'] .kitchen-edge-scrim-left {
+    background: linear-gradient(to right, rgba(8, 6, 5, 0.12), rgba(8, 6, 5, 0.025), transparent);
+  }
+
+  [data-theme='light'] .kitchen-edge-scrim-right {
+    background: linear-gradient(to left, rgba(8, 6, 5, 0.12), rgba(8, 6, 5, 0.025), transparent);
+  }
+
+  .kitchen-photo-vignette {
+    background: radial-gradient(
+      ellipse at center,
+      transparent 58%,
+      rgba(20, 16, 14, 0.06) 78%,
+      rgba(20, 16, 14, 0.16) 100%
+    );
+  }
+
+  [data-theme='light'] .kitchen-photo-vignette {
+    background: radial-gradient(
+      ellipse at center,
+      transparent 62%,
+      rgba(20, 16, 14, 0.025) 82%,
+      rgba(20, 16, 14, 0.08) 100%
+    );
+  }
+
   .glass {
     background: linear-gradient(
       180deg,
@@ -87,23 +807,255 @@
     -webkit-backdrop-filter: blur(14px);
   }
 
-  /* Reveal primitives driven by GSAP / IntersectionObserver fallback */
-  .reveal {
-    opacity: 0;
-    transform: translateY(34px);
-    will-change: transform, opacity;
+  /* On light pages the frosted panel needs a dark-tinted fill + border to read */
+  [data-theme='light'] .glass {
+    background: linear-gradient(
+      180deg,
+      rgba(42, 30, 22, 0.05),
+      rgba(42, 30, 22, 0.015)
+    );
+    border-color: rgba(42, 30, 22, 0.12);
   }
 
+  .policy-shell {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border: 1px solid rgb(var(--ember) / 0.18);
+    background:
+      radial-gradient(circle at 0% 0%, rgb(var(--ember) / 0.12), transparent 20rem),
+      linear-gradient(135deg, rgb(var(--ink-raise) / 0.7), rgb(var(--ink-soft) / 0.68) 62%, rgb(var(--crimson) / 0.045));
+    box-shadow:
+      0 22px 58px -44px rgb(0 0 0 / 0.88),
+      inset 0 1px 0 rgb(255 255 255 / 0.045);
+    backdrop-filter: blur(12px);
+  }
+
+  .policy-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg, rgb(var(--ember) / 0.16), transparent 28%, transparent 68%, rgb(var(--ember) / 0.07)),
+      repeating-linear-gradient(90deg, transparent 0 5.4rem, rgb(var(--ember) / 0.018) 5.4rem 5.45rem);
+    opacity: 0.58;
+  }
+
+  .policy-shell::after {
+    content: '';
+    position: absolute;
+    right: -7rem;
+    top: -8rem;
+    z-index: -1;
+    width: 18rem;
+    height: 18rem;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgb(var(--ember) / 0.085), transparent 68%);
+    filter: blur(1px);
+  }
+
+  .policy-icon {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.08),
+      0 18px 34px -28px rgb(var(--ember) / 0.55);
+  }
+
+  .policy-rule-panel {
+    position: relative;
+  }
+
+  .policy-rule-panel::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.25rem;
+    bottom: 0.25rem;
+    width: 2px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgb(var(--ember) / 0.82), rgb(var(--ember-soft) / 0.44), rgb(var(--ember-deep) / 0.3));
+    box-shadow: 0 0 18px rgb(var(--ember) / 0.14);
+  }
+
+  .policy-note {
+    border: 1px solid rgb(var(--ember) / 0.16);
+    background:
+      linear-gradient(135deg, rgb(var(--ember) / 0.085), rgb(var(--crimson) / 0.065)),
+      rgb(var(--ink-soft) / 0.38);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+  }
+
+  .reservation-info-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border: 1px solid rgb(var(--ember) / 0.18);
+    background:
+      linear-gradient(135deg, rgb(var(--ember) / 0.12), rgb(255 255 255 / 0.026) 46%, rgb(var(--crimson) / 0.06)),
+      linear-gradient(180deg, rgb(var(--ink-raise) / 0.78), rgb(var(--ink-soft) / 0.72));
+    box-shadow:
+      0 22px 52px -42px rgb(0 0 0 / 0.86),
+      inset 0 1px 0 rgb(255 255 255 / 0.055);
+    backdrop-filter: blur(12px);
+  }
+
+  .reservation-info-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: linear-gradient(180deg, rgb(var(--ember) / 0.86), rgb(var(--ember-soft) / 0.34), rgb(var(--crimson) / 0.24));
+    box-shadow: 0 0 20px rgb(var(--ember) / 0.15);
+  }
+
+  .reservation-info-card::after {
+    content: '';
+    position: absolute;
+    right: -5rem;
+    top: -6rem;
+    z-index: -1;
+    width: 13rem;
+    height: 13rem;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgb(var(--ember) / 0.12), transparent 68%);
+  }
+
+  .reservation-info-holiday {
+    border: 1px solid rgb(var(--ember) / 0.15);
+    background:
+      linear-gradient(135deg, rgb(var(--crimson) / 0.1), rgb(var(--ember) / 0.06)),
+      rgb(var(--ink-soft) / 0.32);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+  }
+
+  [data-theme='light'] .policy-shell {
+    border-color: rgba(151, 83, 15, 0.18);
+    background:
+      radial-gradient(circle at 0% 0%, rgba(226, 172, 72, 0.18), transparent 22rem),
+      linear-gradient(135deg, rgba(255, 253, 248, 0.92), rgba(248, 239, 225, 0.82) 62%, rgba(255, 247, 236, 0.88));
+    box-shadow:
+      0 18px 46px -34px rgba(97, 54, 21, 0.34),
+      inset 0 1px 0 rgba(255, 255, 255, 0.76);
+  }
+
+  [data-theme='light'] .policy-shell::before {
+    background:
+      linear-gradient(90deg, rgba(205, 135, 28, 0.14), transparent 28%, transparent 68%, rgba(205, 135, 28, 0.055)),
+      repeating-linear-gradient(90deg, transparent 0 5.4rem, rgba(151, 83, 15, 0.024) 5.4rem 5.45rem);
+    opacity: 0.68;
+  }
+
+  [data-theme='light'] .policy-shell::after {
+    background: radial-gradient(circle, rgba(205, 135, 28, 0.12), transparent 66%);
+  }
+
+  [data-theme='light'] .policy-rule-panel::before {
+    background: linear-gradient(180deg, rgba(205, 135, 28, 0.72), rgba(226, 172, 72, 0.42), rgba(151, 83, 15, 0.24));
+    box-shadow: 0 0 16px rgba(205, 135, 28, 0.14);
+  }
+
+  [data-theme='light'] .policy-note {
+    border-color: rgba(151, 83, 15, 0.14);
+    background:
+      linear-gradient(135deg, rgba(205, 135, 28, 0.09), rgba(222, 24, 40, 0.045)),
+      rgba(255, 252, 247, 0.54);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.56);
+  }
+
+  [data-theme='light'] .reservation-info-card {
+    border-color: rgba(151, 83, 15, 0.18);
+    background:
+      linear-gradient(135deg, rgba(205, 135, 28, 0.11), rgba(255, 255, 255, 0.52) 46%, rgba(222, 24, 40, 0.045)),
+      linear-gradient(180deg, rgba(255, 253, 248, 0.9), rgba(248, 239, 225, 0.82));
+    box-shadow:
+      0 18px 42px -32px rgba(97, 54, 21, 0.36),
+      inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  }
+
+  [data-theme='light'] .reservation-info-card::before {
+    background: linear-gradient(180deg, rgba(205, 135, 28, 0.76), rgba(226, 172, 72, 0.42), rgba(151, 83, 15, 0.24));
+    box-shadow: 0 0 16px rgba(205, 135, 28, 0.13);
+  }
+
+  [data-theme='light'] .reservation-info-card::after {
+    background: radial-gradient(circle, rgba(205, 135, 28, 0.12), transparent 66%);
+  }
+
+  [data-theme='light'] .reservation-info-holiday {
+    border-color: rgba(151, 83, 15, 0.14);
+    background:
+      linear-gradient(135deg, rgba(222, 24, 40, 0.045), rgba(205, 135, 28, 0.08)),
+      rgba(255, 252, 247, 0.5);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.56);
+  }
+
+  /* Reservation panel: transparent inputs skinned onto the parchment slots.
+     Hide native date/time picker icons — the panel already draws calendar/clock. */
+  .resv-field::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    cursor: pointer;
+  }
+  .resv-field::-webkit-datetime-edit {
+    line-height: 1;
+  }
+
+  /* 3D flip card — faces are grid-stacked so the card sizes to the taller side
+     (no fixed height needed). Driven by toggling .is-flipped on .flip-inner. */
+  .flip-card {
+    perspective: 1600px;
+  }
+  .flip-inner {
+    display: grid;
+    transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+  .flip-inner > .flip-face {
+    grid-area: 1 / 1;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .flip-inner > .flip-back {
+    transform: rotateY(180deg);
+  }
+  .flip-inner.is-flipped {
+    transform: rotateY(180deg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flip-inner {
+      transition: none;
+    }
+  }
+
+  /* Reveal primitives driven by GSAP.
+     Only hide when JS is available; no-JS users still see content.
+     Reduced-motion users never get the hidden state at all — pure CSS, so no
+     JS needs to mutate the DOM before React finishes hydrating. */
+  @media (prefers-reduced-motion: no-preference) {
+    .js [data-reveal],
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      will-change: transform, opacity;
+    }
+  }
+
+  .js [data-reveal][data-reveal-ready],
+  .js [data-reveal].reveal-ready,
   .reveal-ready {
     opacity: 1;
     transform: none;
     transition:
       opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
       transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    /* Release the compositor layer once revealed — dozens of permanent
+       will-change layers cost memory and cause jank on mobile GPUs. */
+    will-change: auto;
   }
 
   .text-stroke {
-    -webkit-text-stroke: 1px rgba(244, 236, 228, 0.28);
+    -webkit-text-stroke: 1px rgb(var(--cream) / 0.28);
     color: transparent;
   }
 
@@ -118,6 +1070,29 @@
     animation: lantern-sway 7s ease-in-out infinite;
     will-change: transform;
   }
+
+  .kitchen-ambient-glow {
+    width: clamp(320px, 48vw, 760px);
+    aspect-ratio: 1;
+    border-radius: 999px;
+    filter: blur(86px);
+    opacity: 0.11;
+    will-change: transform, opacity;
+  }
+
+  .kitchen-ambient-glow--warm {
+    left: -18%;
+    top: 24%;
+    background: radial-gradient(circle, rgba(193, 39, 45, 0.6), transparent 68%);
+    animation: kitchen-glow-warm 20s ease-in-out infinite alternate;
+  }
+
+  .kitchen-ambient-glow--gold {
+    right: -21%;
+    top: 61%;
+    background: radial-gradient(circle, rgba(216, 162, 74, 0.48), transparent 70%);
+    animation: kitchen-glow-gold 24s ease-in-out infinite alternate;
+  }
 }
 
 @keyframes lantern-sway {
@@ -130,21 +1105,43 @@
   }
 }
 
+@keyframes kitchen-glow-warm {
+  0% {
+    transform: translate3d(-5%, -3%, 0) scale(0.92);
+    opacity: 0.075;
+  }
+  100% {
+    transform: translate3d(18%, 12%, 0) scale(1.08);
+    opacity: 0.13;
+  }
+}
+
+@keyframes kitchen-glow-gold {
+  0% {
+    transform: translate3d(7%, -8%, 0) scale(1.05);
+    opacity: 0.07;
+  }
+  100% {
+    transform: translate3d(-17%, 13%, 0) scale(0.9);
+    opacity: 0.115;
+  }
+}
+
 /* Brand-tinted, minimal scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #0d0a08;
+  background: rgb(var(--ink-deep));
 }
 ::-webkit-scrollbar-thumb {
-  background: #3a2c23;
+  background: rgb(var(--muted) / 0.55);
   border-radius: 999px;
-  border: 2px solid #0d0a08;
+  border: 2px solid rgb(var(--ink-deep));
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #5a4334;
+  background: rgb(var(--muted) / 0.8);
 }
 
 /* Lenis smooth-scroll wiring */

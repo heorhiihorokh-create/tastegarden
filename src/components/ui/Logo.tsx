@@ -17,7 +17,7 @@ export function Logo({
       width={width}
       height={Math.round((width * logo.height) / logo.width)}
       priority={priority}
-      className={className}
+      className={['brand-logo-boost', className].filter(Boolean).join(' ')}
     />
   );
 }

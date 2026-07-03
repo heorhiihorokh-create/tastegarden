@@ -1,18 +1,19 @@
 {
   "meta": {
     "title": "Taste Garden — Asian all-you-can-eat world cuisine in Izegem",
-    "description": "Teppanyaki, wok, sushi and dessert — freshly prepared and all-you-can-eat. Reserve your table at Taste Garden, Kortrijksestraat 276, Izegem."
+    "description": "8 kitchens and a drinks bar — fresh, all-you-can-eat and included in one formula. Reserve your table at Taste Garden, Kortrijksestraat 276, Izegem."
   },
   "nav": {
-    "concept": "Concept",
-    "stations": "Kitchens",
-    "dishes": "Dishes",
+    "concept": "Home",
+    "stations": "Kitchens & bar",
+    "dishes": "Takeaway",
     "formules": "Pricing",
     "practical": "Hours",
     "reserve": "Reserve",
     "menu": "Menu",
     "close": "Close",
-    "language": "Language"
+    "language": "Language",
+    "theme": "Toggle theme"
   },
   "lang": {
     "label": "Language",
@@ -24,11 +25,21 @@
     "reserve": "Reserve",
     "call": "Call us"
   },
+  "availability": {
+    "label": "Reservations temporarily unavailable",
+    "close": "Close",
+    "holidayTitle": "We are temporarily on holiday",
+    "holidayReserveBody": "During our holiday we are not taking reservations. Please check the announcement above the reservation form for the exact period.",
+    "holidayCallBody": "During our holiday, calling through the website is temporarily unavailable. Please check the announcement above the reservation form for the exact period.",
+    "manualTitle": "Fully booked today",
+    "manualReserveBody": "Reservations are closed today because we are fully booked. Please try again later.",
+    "manualCallBody": "We are fully booked today; calling through the website is temporarily disabled. Please try again later."
+  },
   "hero": {
-    "eyebrow": "Asian dining · Izegem",
-    "titleLine1": "A garden",
-    "titleLine2": "of flavours",
-    "subtitle": "Teppanyaki, wok, sushi and dessert — prepared à la minute and yours to enjoy without limits, in the heart of Izegem.",
+    "eyebrow": "World dining · Izegem",
+    "titleLine1": "Taste Garden",
+    "titleLine2": "World's Kitchens",
+    "subtitle": "Enjoy unlimited teppanyaki, wok, sushi, desserts and drinks — freshly prepared in the heart of Izegem.",
     "ctaPrimary": "Reserve a table",
     "ctaSecondary": "See the pricing",
     "scroll": "Explore",
@@ -37,60 +48,201 @@
   "concept": {
     "eyebrow": "The concept",
     "title": "One price. The whole world on your plate.",
-    "body": "At Taste Garden you don't choose — you taste it all. At our open kitchens the chefs prepare your dishes à la minute, from sizzling teppanyaki to sushi rolled before your eyes. Sit back, take your time and enjoy without limits.",
+    "body": "At Taste Garden you don't choose just one thing — you taste it all. Across eight open kitchens and our drinks bar, enjoy everything without limits: teppanyaki, wok, sushi, dessert, cold and warm starters, hot mains and sides.",
     "stats": [
-      { "value": 100, "suffix": "+", "label": "fresh dishes" },
-      { "value": 4, "suffix": "", "label": "live kitchens" },
-      { "value": 1, "suffix": "", "label": "price, unlimited dining" }
+      {
+        "value": 100,
+        "suffix": "+",
+        "label": "fresh dishes"
+      },
+      {
+        "value": 8,
+        "suffix": "",
+        "label": "open kitchens"
+      },
+      {
+        "value": 1,
+        "suffix": "",
+        "label": "drinks bar"
+      },
+      {
+        "value": 1,
+        "suffix": "",
+        "label": "price, unlimited dining"
+      }
     ]
   },
   "stations": {
-    "eyebrow": "The kitchens",
-    "title": "Four kitchens, live before your eyes",
-    "intro": "Walk past our open stations and let yourself be surprised — every dish is made fresh for you.",
+    "eyebrow": "The kitchens & bar",
+    "title": "8 kitchens. 1 drinks bar. Live before your eyes",
+    "intro": "Move through our open stations and drinks bar — from teppanyaki, wok and sushi to warm dishes, dessert and your favourite drink.",
     "items": [
       {
         "id": "teppanyaki",
         "index": "01",
         "name": "Teppanyaki",
-        "tagline": "Straight off the iron",
-        "description": "On the searing teppan the chef sears wagyu, prawns and vegetables — crisp outside, melting within."
+        "tagline": "From the hot plate",
+        "description": "Pick your favourites and have them cooked à la minute on the teppan: hot, fragrant and full of flavour."
       },
       {
         "id": "wok",
         "index": "02",
         "name": "Wok",
-        "tagline": "You choose, the chef fires",
-        "description": "Build your own bowl from fresh ingredients and sauces. The chef stir-fries it all over a roaring flame."
+        "tagline": "You choose, we wok",
+        "description": "Build your plate with vegetables, sauce and toppings; the chef stir-fries it over high heat."
       },
       {
         "id": "sushi",
         "index": "03",
         "name": "Sushi bar",
-        "tagline": "Rolled fresh all evening",
-        "description": "Maki, nigiri and California rolls, made fresh on a loop at our sushi bar."
+        "tagline": "Fresh from the sushi bar",
+        "description": "Maki, nigiri and rolls for a light start or a fresh bite between plates."
       },
       {
         "id": "dessert",
         "index": "04",
-        "name": "Dessert & ice cream",
-        "tagline": "The sweet finale",
-        "description": "Fine patisserie, fresh fruit and an all-you-can-eat ice cream bar to finish in style."
+        "name": "Dessert buffet",
+        "tagline": "The sweet finish",
+        "description": "End your visit with dessert, fruit and ice cream: a small taste or one last generous plate."
+      },
+      {
+        "id": "cold-starters",
+        "index": "05",
+        "name": "Cold starters",
+        "tagline": "Start fresh",
+        "description": "Light cold bites to ease into your meal or refresh your plate between courses."
+      },
+      {
+        "id": "warm-starters",
+        "index": "06",
+        "name": "Warm starters",
+        "tagline": "Crisp and generous",
+        "description": "Saucy peeled shrimp, baked red fish, fries, crispy rolls and nuggets — each warm starter in its own buffet section."
+      },
+      {
+        "id": "warm-mains",
+        "index": "07",
+        "name": "Warm main courses",
+        "tagline": "Generous hot buffet",
+        "description": "Savoury mains to mix and match your way, from mild to spicy."
+      },
+      {
+        "id": "warm-sides",
+        "index": "08",
+        "name": "Warm side dishes",
+        "tagline": "The perfect add-on",
+        "description": "Warm sides that complete your plate, easy to pair with wok, grill or buffet dishes."
+      },
+      {
+        "id": "drinks-bar",
+        "index": "09",
+        "name": "Drinks bar",
+        "tagline": "Drinks included",
+        "description": "Soft drinks, draft beer, house wine, coffee and tea are included with your formula."
       }
     ]
   },
   "dishes": {
-    "eyebrow": "Signature",
-    "title": "A taste of tonight",
-    "intro": "Fresh, generous and made with care — night after night.",
-    "captions": [
-      "Teppanyaki wagyu",
-      "Wok of the moment",
-      "Shared table, Asian classics",
-      "House dessert",
-      "Under the lanterns",
-      "Fresh from the bar"
-    ]
+    "eyebrow": "Takeaway menu",
+    "title": "Choose your favourites for home",
+    "intro": "From spicy soup to wok classics — explore the full takeaway menu and choose easily by category.",
+    "dishCount": "{count, plural, one {# dish} other {# dishes}}",
+    "categories": [
+      {
+        "id": "soep",
+        "index": "01",
+        "title": "Soup",
+        "items": [
+          {
+            "name": "Spicy soup",
+            "price": "€5,00"
+          },
+          {
+            "name": "Lobster soup",
+            "price": "€6,00"
+          }
+        ]
+      },
+      {
+        "id": "voorgerechten",
+        "index": "02",
+        "title": "Starters",
+        "items": [
+          {
+            "name": "Mini spring rolls",
+            "price": "€4,50"
+          },
+          {
+            "name": "Chicken nuggets",
+            "price": "€5,00"
+          },
+          {
+            "name": "Squid rings",
+            "price": "€5,50"
+          },
+          {
+            "name": "Breaded prawns",
+            "price": "€7,50"
+          },
+          {
+            "name": "Mixed sushi (10 pcs)",
+            "price": "€8,00"
+          }
+        ]
+      },
+      {
+        "id": "hoofdgerechten",
+        "index": "03",
+        "title": "Main courses",
+        "items": [
+          {
+            "name": "Nasi goreng with chicken",
+            "price": "€11,00"
+          },
+          {
+            "name": "Bami goreng with chicken",
+            "price": "€11,00"
+          },
+          {
+            "name": "Battered fried chicken",
+            "price": "€11,00"
+          },
+          {
+            "name": "Duck in orange sauce",
+            "price": "€16,50"
+          },
+          {
+            "name": "Prawns in garlic butter",
+            "price": "€17,50"
+          },
+          {
+            "name": "Chilli scampi with five spices",
+            "price": "€18,50"
+          },
+          {
+            "name": "Mushrooms with cocktail sauce",
+            "price": "€10,00"
+          },
+          {
+            "name": "Chicken dishes",
+            "price": "€11,00"
+          },
+          {
+            "name": "Beef dishes",
+            "price": "€13,00"
+          },
+          {
+            "name": "Prawn dishes",
+            "price": "€17,00"
+          }
+        ]
+      }
+    ],
+    "notes": {
+      "title": "Sauces of your choice",
+      "sauces": "Chef's sauce · Curry sauce (spicy) · Sweet-and-sour sauce · Spicy sauce · Gonbao sauce (mildly spicy)",
+      "veg": "Includes vegetables, also available with bean sprouts (on request)"
+    }
   },
   "formules": {
     "eyebrow": "Pricing",
@@ -110,36 +262,82 @@
         "time": "11:30 – 14:30",
         "adults": 25,
         "kids": 17,
-        "under5": 5.5
+        "under5": 5.5,
+        "kitchens": [
+          "2 kinds of soup",
+          "Cold starters",
+          "Sushi bar",
+          "Warm starters",
+          "Warm main courses",
+          "Warm side dishes",
+          "Dessert buffet"
+        ]
       },
       {
         "id": "diner",
         "name": "Dinner",
         "days": "Every evening · Sun & holidays",
-        "time": "from 18:00",
+        "time": "18:00 – 22:00",
         "adults": 43,
         "kids": 24,
         "under5": 5.5,
-        "featured": true
+        "featured": true,
+        "kitchens": [
+          "2 kinds of soup",
+          "Cold starters",
+          "Sushi bar",
+          "Warm starters",
+          "Warm main courses",
+          "Warm side dishes",
+          "Teppanyaki",
+          "Dessert buffet"
+        ]
       }
     ],
     "includedTitle": "Included",
-    "included": ["Soft drinks", "Draft beer", "House wine", "Coffee & tea"],
+    "included": [
+      "Soft drinks",
+      "Draft beer",
+      "House wine",
+      "Coffee & tea"
+    ],
     "specialTitle": "Festive & themed menus",
     "special": [
-      { "id": "nieuwjaar", "name": "New Year's Eve", "date": "31 December", "adults": 78, "kids": 39, "under5": 15 },
-      { "id": "feestdagen", "name": "Holiday menu", "date": "24–25 Dec · 1 Jan", "adults": 58, "kids": 29, "under5": 13 }
+      {
+        "id": "nieuwjaar",
+        "name": "New Year's Eve",
+        "date": "31 December",
+        "adults": 78,
+        "kids": 39,
+        "under5": 15
+      },
+      {
+        "id": "feestdagen",
+        "name": "Holiday menu",
+        "date": "24–25 Dec · 1 Jan",
+        "adults": 58,
+        "kids": 29,
+        "under5": 13
+      }
     ],
     "birthday": {
-      "title": "Birthday this week?",
-      "body": "Celebrate your birthday with us and enjoy €15 off when you come with 3 or more adults — valid up to 3 days after your birthday."
+      "title": "Birthday?",
+      "body": "Is it your birthday on the day itself, or within 3 days before or after the day you dine with us? Then you pay just €15.00, provided you're accompanied by at least 3 other adults — on presentation of your ID card."
+    },
+    "details": {
+      "flipHint": "Tap to see what's included",
+      "backTitle": "Included in your formula",
+      "kitchensTitle": "Unlimited at every kitchen",
+      "drinksTitle": "Drinks included",
+      "alaMinute": "All à la minute · as much as you like",
+      "back": "Back to price"
     },
     "note": "Reservation recommended, especially on festive days."
   },
   "ambiance": {
     "eyebrow": "The atmosphere",
-    "quote": "Where the warmth of a garden meets the flavours of Asia.",
-    "body": "Warm lanterns, open kitchens and the scent of the teppan. Taste Garden is a real evening out — with friends, with family, or for that one special moment."
+    "quote": "All-you-can-eat dining in Taste Garden",
+    "body": "At world-kitchen Taste Garden in Izegem, you can enjoy an extensive choice of food and drinks à volonté — soft drinks, draft beer, house wines, coffee and tea — for one fixed price. We work in buffet style, which means you can take your own food and drinks."
   },
   "practical": {
     "eyebrow": "Practical",
@@ -148,28 +346,87 @@
     "today": "Today",
     "openNow": "Open now",
     "closedNow": "Closed now",
-    "hours": [
-      { "day": "Monday", "value": "Closed *" },
-      { "day": "Tuesday — Thursday", "value": "11:30–14:30 · 18:00–22:00" },
-      { "day": "Friday — Saturday", "value": "11:30–14:30 · 18:00–23:00" },
-      { "day": "Sun & holidays", "value": "11:30–16:00 · 18:00–22:00" }
+    "closed": "Closed",
+    "notReservableLabel": "not bookable",
+    "lunchLabel": "Lunch",
+    "dinnerLabel": "Dinner",
+    "rulesTitle": "Important for your reservation",
+    "infoLabel": "Good to know",
+    "focusRule": {
+      "title": "Tuesday–Thursday",
+      "body": "On Tuesday, Wednesday and Thursday, reservations are dinner only.",
+      "holidayLabel": "Public holiday",
+      "holiday": "If a public holiday falls on Monday, we open on Monday and close on Tuesday."
+    },
+    "rules": [
+      {
+        "title": "Lunch days",
+        "body": "Lunch is only available on Friday, Saturday, Sunday and public holidays."
+      },
+      {
+        "title": "Tuesday–Thursday",
+        "body": "On Tuesday, Wednesday and Thursday, reservations are dinner only."
+      },
+      {
+        "title": "Monday public holiday",
+        "body": "We open on that Monday and close on Tuesday."
+      }
     ],
-    "hoursNote": "* Open on public holidays",
+    "hours": [
+      {
+        "day": "Monday",
+        "closed": true
+      },
+      {
+        "day": "Tuesday — Thursday",
+        "lunch": "11:30–14:30",
+        "lunchLocked": true,
+        "dinner": "18:00–22:00"
+      },
+      {
+        "day": "Friday — Saturday",
+        "lunch": "11:30–14:30",
+        "dinner": "18:00–23:00"
+      },
+      {
+        "day": "Sun & holidays",
+        "lunch": "11:30–16:00",
+        "dinner": "18:00–22:00"
+      }
+    ],
+    "lunchNote": "Lunch only on Friday, Saturday, Sunday & public holidays — other days, evenings only.",
+    "hoursNote": "Closed on Monday, except public holidays.",
     "addressTitle": "Address",
     "address": "Kortrijksestraat 276\n8870 Izegem",
     "directions": "Get directions",
     "contactTitle": "Contact",
     "phone1": "051 30 38 88",
     "phone2": "0460 97 30 88",
-    "call": "Call us"
+    "call": "Call us",
+    "callHint": "Tap a number to call"
   },
   "reservation": {
     "eyebrow": "Reservation",
     "title": "Reserve your table",
     "intro": "Leave us your details — we'll confirm your reservation as soon as possible. Prefer to call? You're always welcome to.",
+    "rulesTitle": "Tuesday–Thursday",
+    "infoLabel": "Good to know",
+    "holidayLabel": "Public holiday",
+    "rules": [
+      "On Tuesday, Wednesday and Thursday, reservations are dinner only from 18:00.",
+      "Public holiday on Monday? We open Monday and close Tuesday."
+    ],
     "form": {
       "date": "Date",
       "time": "Time",
+      "chooseTime": "Choose a time",
+      "chooseDate": "Pick a date first",
+      "closedDay": "Closed that day",
+      "holidayBlockedDate": "Closed for holiday on this date",
+      "afterHolidayClosed": "Closed: Tuesday after a Monday public holiday",
+      "lunchUnavailable": "Lunch is not available on this date",
+      "invalidTime": "Choose a valid time",
+      "noTimes": "No times left",
       "service": "Service",
       "lunch": "Lunch",
       "dinner": "Dinner",
@@ -193,10 +450,17 @@
     "error": "Something went wrong. Feel free to call us on 051 30 38 88.",
     "phoneCta": "Or call 051 30 38 88",
     "required": "This field is required",
-    "invalidEmail": "Enter a valid email address"
+    "invalidEmail": "Enter a valid email address",
+    "closedBadge": "Fully booked today",
+    "closedTitle": "Reservations closed today",
+    "closedBody": "We are fully booked today and are temporarily not taking new reservations.",
+    "closedHint": "Reservation and calling through the website are temporarily blocked",
+    "holidayClosedBadge": "Holiday",
+    "holidayClosedTitle": "Temporarily on holiday",
+    "holidayClosedBody": "During our holiday we are not taking reservations. The announcement above shows the exact period."
   },
   "footer": {
-    "tagline": "Asian all-you-can-eat world cuisine in the heart of Izegem.",
+    "tagline": "All-you-can-eat world cuisine in the heart of Izegem.",
     "openingHours": "Opening hours",
     "visit": "Visit us",
     "follow": "Follow us",
