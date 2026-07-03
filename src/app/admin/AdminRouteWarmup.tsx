@@ -10,7 +10,6 @@ export function AdminRouteWarmup() {
 
   useEffect(() => {
     let cancelled = false;
-    const queue = [...ADMIN_ROUTES];
     const connection = (
       navigator as Navigator & {
         connection?: { saveData?: boolean };
@@ -19,33 +18,24 @@ export function AdminRouteWarmup() {
 
     if (connection?.saveData) return;
 
-    const warmNext = () => {
+    const warmRoutes = () => {
       if (cancelled || document.visibilityState !== 'visible') return;
-      const route = queue.shift();
-      if (!route) return;
-
-      router.prefetch(route);
-      if (queue.length) window.setTimeout(warmNext, 420);
+      for (const route of ADMIN_ROUTES) {
+        router.prefetch(route);
+      }
     };
 
-    const hasIdleCallback = typeof window.requestIdleCallback === 'function';
-    let idleId: number | null = null;
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    const warmWhenVisible = () => {
+      if (document.visibilityState === 'visible') warmRoutes();
+    };
 
-    if (hasIdleCallback) {
-      idleId = window.requestIdleCallback(warmNext, { timeout: 2200 });
-    } else {
-      timeoutId = globalThis.setTimeout(warmNext, 1300);
-    }
+    const timeoutId = window.setTimeout(warmRoutes, 120);
+    document.addEventListener('visibilitychange', warmWhenVisible, { passive: true });
 
     return () => {
       cancelled = true;
-      if (idleId !== null) {
-        window.cancelIdleCallback(idleId);
-      }
-      if (timeoutId !== null) {
-        globalThis.clearTimeout(timeoutId);
-      }
+      window.clearTimeout(timeoutId);
+      document.removeEventListener('visibilitychange', warmWhenVisible);
     };
   }, [router]);
 

@@ -10,7 +10,6 @@ const LOCALES = ['nl', 'fr', 'en'];
 
 function revalidatePublic() {
   invalidatePublicContentCache();
-  for (const l of LOCALES) revalidatePath(`/${l}`);
 }
 
 async function audit(action: string, detail: unknown) {

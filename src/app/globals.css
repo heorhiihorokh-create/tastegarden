@@ -288,9 +288,13 @@ html:not(.js) .initial-loader {
 
 .brand-loader {
   display: grid;
+  width: 100%;
   min-height: min(100svh, 100vh);
   place-items: center;
-  background: #fff;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(232, 201, 138, 0.24), transparent 17rem),
+    radial-gradient(circle at 50% 58%, rgba(193, 39, 45, 0.055), transparent 15rem),
+    linear-gradient(180deg, #fffdf8 0%, #fff8ee 54%, #fffaf4 100%);
   color: #c1272d;
 }
 
@@ -299,20 +303,77 @@ html:not(.js) .initial-loader {
 }
 
 .brand-loader__stage {
+  --brand-loader-size: clamp(178px, 22vw, 244px);
   position: relative;
   display: grid;
-  width: 80px;
-  min-height: 91px;
+  width: var(--brand-loader-size);
+  aspect-ratio: 1;
   place-items: center;
   isolation: isolate;
 }
 
+.brand-loader__aura {
+  position: absolute;
+  inset: 16%;
+  z-index: -1;
+  border-radius: 999px;
+  background:
+    conic-gradient(
+      from 110deg,
+      transparent 0deg,
+      rgba(216, 162, 74, 0.28) 54deg,
+      rgba(193, 39, 45, 0.16) 118deg,
+      transparent 190deg,
+      rgba(216, 162, 74, 0.2) 276deg,
+      transparent 360deg
+    );
+  filter: blur(18px);
+  opacity: 0.64;
+  animation: brand-loader-aura 2.6s ease-in-out infinite;
+}
+
+.brand-loader__ring {
+  position: absolute;
+  inset: 9%;
+  border: 1px solid rgba(193, 39, 45, 0.12);
+  border-top-color: rgba(216, 162, 74, 0.72);
+  border-right-color: rgba(193, 39, 45, 0.35);
+  border-radius: 999px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.82),
+    0 14px 36px -28px rgba(142, 27, 32, 0.42);
+  animation: brand-loader-ring 2.25s linear infinite;
+}
+
+.brand-loader__orbit {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  animation: brand-loader-orbit 5.4s linear infinite;
+}
+
+.brand-loader__orbit-text {
+  fill: #9f1f25;
+  font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.33em;
+  text-transform: uppercase;
+  opacity: 0.74;
+  animation: brand-loader-text 1.85s ease-in-out infinite;
+}
+
 .brand-loader__logo {
   position: relative;
-  width: 80px;
+  z-index: 1;
+  width: clamp(132px, 16.5vw, 178px);
   height: auto;
   opacity: 1;
-  animation: brand-loader-fade-logo 1.4s ease-in-out infinite both;
+  filter:
+    saturate(1.08)
+    contrast(1.04)
+    drop-shadow(0 14px 20px rgba(97, 54, 21, 0.13));
+  animation: brand-loader-logo 2.1s ease-in-out infinite both;
   user-select: none;
 }
 
@@ -338,13 +399,57 @@ html:not(.js) .initial-loader {
   }
 }
 
-@keyframes brand-loader-fade-logo {
+@keyframes brand-loader-ring {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes brand-loader-orbit {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes brand-loader-text {
   0%,
   100% {
-    opacity: 1;
+    opacity: 0.34;
+    letter-spacing: 0.31em;
   }
   50% {
-    opacity: 0;
+    opacity: 0.88;
+    letter-spacing: 0.36em;
+  }
+}
+
+@keyframes brand-loader-logo {
+  0%,
+  100% {
+    transform: scale(0.985);
+    filter:
+      saturate(1.06)
+      contrast(1.03)
+      drop-shadow(0 12px 18px rgba(97, 54, 21, 0.12));
+  }
+  50% {
+    transform: scale(1.015);
+    filter:
+      saturate(1.18)
+      contrast(1.06)
+      drop-shadow(0 18px 28px rgba(193, 39, 45, 0.16));
+  }
+}
+
+@keyframes brand-loader-aura {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: scale(0.92) rotate(0deg);
+  }
+  50% {
+    opacity: 0.78;
+    transform: scale(1.06) rotate(18deg);
   }
 }
 
@@ -367,7 +472,11 @@ html:not(.js) .initial-loader {
   .route-loader__veil,
   .route-loader__mark i::before,
   .route-loader,
-  .brand-loader__logo {
+  .brand-loader__logo,
+  .brand-loader__ring,
+  .brand-loader__orbit,
+  .brand-loader__orbit-text,
+  .brand-loader__aura {
     animation: none !important;
   }
 }

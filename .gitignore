@@ -13,3 +13,6 @@ next-env.d.ts
 /.shots
 /.agents
 tsconfig.tsbuildinfo
+
+# Business documents — never publish (public repo)
+/docs/contract/

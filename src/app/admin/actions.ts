@@ -40,8 +40,11 @@ async function audit(action: string, detail: unknown) {
 }
 
 function revalidatePublic() {
+  // Public pages are force-dynamic/noStore and read through a tiny in-process
+  // cache. Clearing that cache is the part that makes admin edits visible on
+  // the next request; avoiding broad route revalidation keeps admin buttons
+  // feeling instant instead of waiting on unrelated page trees.
   invalidatePublicContentCache();
-  for (const locale of ['nl', 'fr', 'en']) revalidatePath(`/${locale}`);
 }
 
 async function saveHolidayBlockWindow(
@@ -361,9 +364,7 @@ export async function setHolidayActive(formData: FormData) {
     );
     if (!allTextsFilled) {
       void audit('holiday_active_blocked_incomplete', { active });
-      revalidatePath('/admin');
       revalidatePath('/admin/banner');
-      revalidatePublic();
       return;
     }
   }
@@ -373,7 +374,7 @@ export async function setHolidayActive(formData: FormData) {
     .update({ holiday_active: active, updated_at: new Date().toISOString() })
     .eq('id', 1);
   void audit('holiday_active', { active });
-  revalidatePath('/admin');
+  revalidatePath('/admin/banner');
   revalidatePublic();
 }
 
@@ -427,7 +428,6 @@ export async function updateHoliday(formData: FormData) {
     allTextsFilled,
     blockWindow,
   });
-  revalidatePath('/admin');
   revalidatePath('/admin/banner');
   revalidatePublic();
 }
