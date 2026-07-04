@@ -187,10 +187,13 @@ export function ScheduleEditor({
       prev.map((e) => (e.id === id ? { ...e, [service]: { ...e[service], ...patch } } : e)),
     );
 
-  // Tap a calendar day → add an exception for it, pre-filled with that weekday's
-  // standard hours (so the owner doesn't retype the usual times).
-  const addExceptionForDate = (iso: string) => {
-    if (exceptions.some((e) => e.date === iso)) return; // already has one
+  // Tap a calendar day → add an exception pre-filled with that weekday's standard
+  // hours. Tap the same day again → remove the exception (toggle).
+  const toggleExceptionForDate = (iso: string) => {
+    if (exceptions.some((e) => e.date === iso)) {
+      setExceptions((prev) => prev.filter((e) => e.date !== iso));
+      return;
+    }
     const day = weekly[weekdayOfIso(iso)];
     const stdClosed = !day.lunch.open && !day.dinner.open;
     setExceptions((prev) =>
@@ -235,9 +238,10 @@ export function ScheduleEditor({
     () => Array.from({ length: 7 }, (_, i) => addDaysIso(weekStart, i)),
     [weekStart],
   );
+  const weekEnd = parseIso(addDaysIso(weekStart, 6));
   const weekLabel = `${monthDayFmt.format(parseIso(weekStart))} – ${monthDayFmt.format(
-    parseIso(addDaysIso(weekStart, 6)),
-  )}`;
+    weekEnd,
+  )} ${weekEnd.getUTCFullYear()}`;
 
   const onTouchEnd = (endX: number) => {
     if (swipeX.current === null) return;
@@ -305,8 +309,9 @@ export function ScheduleEditor({
           <div>
             <h2 className="text-lg font-semibold text-zinc-900">Kalender</h2>
             <p className="mt-1 text-sm text-zinc-500">
-              Blader door de weken en tik een dag om af te wijken (sluiten of andere uren). Een
-              stip toont of die dag open is; een oranje rand betekent een uitzondering.
+              Blader door de weken en tik een dag om af te wijken (sluiten of andere uren); tik
+              nogmaals om de uitzondering te verwijderen. Een stip toont of die dag open is; een
+              oranje rand betekent een uitzondering.
             </p>
           </div>
           <div className="flex items-center gap-1">
@@ -351,7 +356,7 @@ export function ScheduleEditor({
               <button
                 key={iso}
                 type="button"
-                onClick={() => addExceptionForDate(iso)}
+                onClick={() => toggleExceptionForDate(iso)}
                 disabled={isPast}
                 aria-label={`${fullDateFmt.format(parseIso(iso))} — ${open ? 'open' : 'gesloten'}${
                   hasException ? ', uitzondering' : ''
