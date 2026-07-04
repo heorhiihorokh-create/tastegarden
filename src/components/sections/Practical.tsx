@@ -1,16 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { Clock, MapPin, Phone, Sun, Moon, Lock } from '@/components/ui/Icons';
 import { SectionEmblem } from '@/components/ui/SectionEmblem';
-import {
-  getBelgiumNow,
-  getOpeningWindowsForDate,
-  getWeekday,
-  isBelgianPublicHoliday,
-  isCompensationTuesdayClosed,
-} from '@/lib/openingSchedule';
+import { getBelgiumNow, getOpeningWindowsForDate, getWeekday } from '@/lib/openingSchedule';
+import { DEFAULT_SCHEDULE, buildWeeklyHoursRows, type ScheduleConfig } from '@/lib/scheduleConfig';
 import { useTheme } from '@/lib/useTheme';
 
 /** Build a dial-able tel: href from a displayed BE phone number (so edits actually call it). */
@@ -21,17 +16,7 @@ function telHref(display: string): string {
   return `tel:${d}`;
 }
 
-type Hour = {
-  day: string;
-  lunch?: string;
-  dinner?: string;
-  closed?: boolean;
-  lunchLocked?: boolean;
-};
 type FocusRule = { title: string; body: string; holidayLabel: string; holiday: string };
-
-// JS weekday (0=Sun..6=Sat) -> grouped hours row index used in the i18n list.
-const dayToRow: Record<number, number> = { 1: 0, 2: 1, 3: 1, 4: 1, 5: 2, 6: 2, 0: 3 };
 
 // One service window (lunch = sun, dinner = moon) rendered as a compact time chip.
 function TimeChip({
@@ -66,31 +51,30 @@ function TimeChip({
   );
 }
 
-export function Practical() {
+export function Practical({ schedule = DEFAULT_SCHEDULE }: { schedule?: ScheduleConfig }) {
   const t = useTranslations('practical');
+  const locale = useLocale();
   const theme = useTheme();
   const isLight = theme === 'light';
-  const hours = t.raw('hours') as Hour[];
   const focusRule = t.raw('focusRule') as FocusRule;
-  const [todayRow, setTodayRow] = useState<number | null>(null);
+  // Opening-hours list is derived 1:1 from the same schedule the booking form
+  // uses, so admin edits show here immediately and can never drift.
+  const hours = useMemo(() => buildWeeklyHoursRows(schedule, locale), [schedule, locale]);
+  const [todayWeekday, setTodayWeekday] = useState<number | null>(null);
   const [openNow, setOpenNow] = useState<boolean | null>(null);
 
   useEffect(() => {
     const now = getBelgiumNow();
-    const weekday = getWeekday(now.iso);
-    const row = isCompensationTuesdayClosed(now.iso)
-      ? null
-      : isBelgianPublicHoliday(now.iso)
-        ? 3
-        : dayToRow[weekday];
-
-    setTodayRow(row ?? null);
+    setTodayWeekday(getWeekday(now.iso));
     setOpenNow(
-      Object.values(getOpeningWindowsForDate(now.iso)).some(
+      Object.values(getOpeningWindowsForDate(now.iso, schedule)).some(
         ([start, end]) => now.minutes >= start && now.minutes < end,
       ),
     );
-  }, []);
+  }, [schedule]);
+
+  const todayRow =
+    todayWeekday === null ? -1 : hours.findIndex((row) => row.days.includes(todayWeekday));
 
   const mapSrc =
     'https://www.google.com/maps?q=Kortrijksestraat+276,+8870+Izegem,+België&z=15&output=embed';
@@ -163,7 +147,7 @@ export function Practical() {
                 const active = todayRow === i;
                 return (
                   <li
-                    key={h.day}
+                    key={h.key}
                     className={`relative flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-2xl px-3.5 py-3 transition-colors ${
                       active
                         ? 'bg-gradient-to-r from-ember/[0.12] via-ember/[0.05] to-transparent'
@@ -178,7 +162,7 @@ export function Practical() {
                     )}
                     <span className="flex items-center gap-2.5">
                       <span className={`text-[0.95rem] font-medium ${active ? 'text-cream' : 'text-cream/85'}`}>
-                        {h.day}
+                        {h.label}
                       </span>
                       {active && (
                         <span className="rounded-full bg-ember/20 px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide text-ember">
@@ -196,16 +180,23 @@ export function Practical() {
                         <>
                           {h.lunch && (
                             <TimeChip
-                              icon={h.lunchLocked ? Lock : Sun}
+                              icon={h.lunchReservable ? Sun : Lock}
                               time={h.lunch}
                               label={t('lunchLabel')}
                               active={active}
-                              locked={h.lunchLocked}
+                              locked={!h.lunchReservable}
                               lockedLabel={t('notReservableLabel')}
                             />
                           )}
                           {h.dinner && (
-                            <TimeChip icon={Moon} time={h.dinner} label={t('dinnerLabel')} active={active} />
+                            <TimeChip
+                              icon={h.dinnerReservable ? Moon : Lock}
+                              time={h.dinner}
+                              label={t('dinnerLabel')}
+                              active={active}
+                              locked={!h.dinnerReservable}
+                              lockedLabel={t('notReservableLabel')}
+                            />
                           )}
                         </>
                       )}

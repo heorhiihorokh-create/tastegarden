@@ -56,9 +56,27 @@ function IconBanner() {
     </svg>
   );
 }
+function IconHours() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      className="admin-nav-icon h-4 w-4 shrink-0"
+      style={iconStyle}
+      aria-hidden
+      focusable="false"
+    >
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M12 7.5V12l3 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 const NAV = [
   { key: 'bookings', href: '/admin', label: 'Reservaties', Icon: IconBookings },
+  { key: 'hours', href: '/admin/hours', label: 'Openingsuren', Icon: IconHours },
   { key: 'banner', href: '/admin/banner', label: 'Aankondiging', Icon: IconBanner },
   { key: 'content', href: '/admin/content', label: 'Teksten', Icon: IconContent },
 ] as const;
@@ -69,7 +87,7 @@ export function AdminShell({
   email,
   children,
 }: {
-  active: 'bookings' | 'banner' | 'content';
+  active: 'bookings' | 'hours' | 'banner' | 'content';
   email?: string | null;
   children: ReactNode;
 }) {

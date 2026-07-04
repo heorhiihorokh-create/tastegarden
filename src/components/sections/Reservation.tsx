@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useLocale, useTranslations } from 'next-intl';
-import { Check, Clock, Phone } from '@/components/ui/Icons';
+import { Check, Clock, Phone, Lock } from '@/components/ui/Icons';
 import { SectionEmblem } from '@/components/ui/SectionEmblem';
 import { HolidayAnnouncementCard, type HolidaySeason } from '@/components/ui/HolidayAnnouncementCard';
 import {
@@ -14,6 +14,7 @@ import {
   isServiceAvailableForDate,
   type Service,
 } from '@/lib/openingSchedule';
+import { DEFAULT_SCHEDULE, pickText, type ScheduleConfig } from '@/lib/scheduleConfig';
 import resvPanel from '../../../public/images/resv-panel.png';
 import resvPanelLight from '../../../public/images/resv-panel-light.png';
 import togglePlaque from '../../../public/images/resv-toggle.png';
@@ -87,6 +88,7 @@ export function Reservation({
   bookingsClosed = false,
   closedMessage = '',
   holiday,
+  schedule = DEFAULT_SCHEDULE,
 }: {
   bookingsClosed?: boolean;
   closedMessage?: string;
@@ -98,6 +100,7 @@ export function Reservation({
     title: string;
     message: string;
   };
+  schedule?: ScheduleConfig;
 }) {
   const t = useTranslations('reservation');
   const locale = useLocale();
@@ -120,16 +123,16 @@ export function Reservation({
   // default to the next bookable date so Monday/closed days do not look broken.
   useEffect(() => {
     const now = getBelgiumNow();
-    const nextDate = getNextBookableDateIso(now.iso, undefined, now.minutes) || now.iso;
-    const nextService: Service = isServiceAvailableForDate(nextDate, 'dinner') ? 'dinner' : 'lunch';
+    const nextDate = getNextBookableDateIso(now.iso, schedule, undefined, now.minutes) || now.iso;
+    const nextService: Service = isServiceAvailableForDate(nextDate, 'dinner', schedule) ? 'dinner' : 'lunch';
 
     setToday({ iso: now.iso, min: now.minutes });
     setValues((v) => (v.date ? v : { ...v, date: nextDate, service: nextService }));
-  }, []);
+  }, [schedule]);
 
   const dayState = useMemo(
-    () => (values.date ? getReservationDayState(values.date) : null),
-    [values.date],
+    () => (values.date ? getReservationDayState(values.date, schedule) : null),
+    [values.date, schedule],
   );
   const selectedDateBlocked = Boolean(
     holiday?.active &&
@@ -138,29 +141,51 @@ export function Reservation({
   );
   const lunchAvailable = !selectedDateBlocked && Boolean(dayState?.available.lunch);
   const dinnerAvailable = !selectedDateBlocked && Boolean(dayState?.available.dinner);
+  const lunchWalkIn = !selectedDateBlocked && Boolean(dayState?.walkIn.lunch);
+  const dinnerWalkIn = !selectedDateBlocked && Boolean(dayState?.walkIn.dinner);
+  const lunchOpen = lunchAvailable || lunchWalkIn;
+  const dinnerOpen = dinnerAvailable || dinnerWalkIn;
   const dayClosed = Boolean(dayState?.isClosed || selectedDateBlocked);
   const serviceAvailable = values.service === 'lunch' ? lunchAvailable : dinnerAvailable;
+  const serviceOpen = values.service === 'lunch' ? lunchOpen : dinnerOpen;
+  // Selected service is physically open but not online-bookable → show a card.
+  const serviceWalkIn = (values.service === 'lunch' ? lunchWalkIn : dinnerWalkIn) && !serviceAvailable;
+  const walkInMessage = pickText(
+    values.service === 'lunch' ? schedule.messages.walkinLunch : schedule.messages.walkinDinner,
+    locale,
+  );
 
   const slots = useMemo(() => {
     if (!today || selectedDateBlocked) return [];
     return buildReservationSlots(
       values.date,
       values.service,
+      schedule,
       values.date === today.iso,
       today.min,
     );
-  }, [selectedDateBlocked, values.date, values.service, today]);
+  }, [selectedDateBlocked, values.date, values.service, today, schedule]);
 
   // If a selected date does not offer the current service, choose the best valid
   // fallback. This makes Tue–Thu dinner-only feel intentional instead of broken.
   useEffect(() => {
-    if (!values.date || serviceAvailable) return;
+    // Only auto-switch away from a service that is fully closed. A walk-in
+    // service stays selected so the guest sees its "book by phone" card.
+    if (!values.date || serviceOpen) return;
 
-    const fallback: Service = dinnerAvailable ? 'dinner' : lunchAvailable ? 'lunch' : 'dinner';
+    const fallback: Service = dinnerAvailable
+      ? 'dinner'
+      : lunchAvailable
+        ? 'lunch'
+        : dinnerOpen
+          ? 'dinner'
+          : lunchOpen
+            ? 'lunch'
+            : 'dinner';
     if (fallback !== values.service) {
       setValues((v) => ({ ...v, service: fallback, time: '' }));
     }
-  }, [dinnerAvailable, lunchAvailable, serviceAvailable, values.date, values.service]);
+  }, [dinnerAvailable, lunchAvailable, dinnerOpen, lunchOpen, serviceOpen, values.date, values.service]);
 
   // Drop a chosen time that is no longer offered (day/service/now changed).
   useEffect(() => {
@@ -223,11 +248,13 @@ export function Reservation({
     ? f('afterHolidayClosed')
     : dayClosed
       ? f('closedDay')
-      : values.date && !serviceAvailable
-        ? values.service === 'lunch'
-          ? f('lunchUnavailable')
-          : f('noTimes')
-        : null;
+      : serviceWalkIn
+        ? null // walk-in shows its own card below the panel
+        : values.date && !serviceAvailable
+          ? values.service === 'lunch'
+            ? f('lunchUnavailable')
+            : f('noTimes')
+          : null;
   const holidayBlocksReservations = Boolean(holiday?.blocksReservations);
   const unavailableReason = holidayBlocksReservations ? 'holiday' : bookingsClosed ? 'manual' : null;
   const reservationsUnavailable = Boolean(unavailableReason);
@@ -335,10 +362,10 @@ export function Reservation({
                   type="button"
                   onClick={() => {
                     const nextDate = today
-                      ? getNextBookableDateIso(today.iso, undefined, today.min) || today.iso
+                      ? getNextBookableDateIso(today.iso, schedule, undefined, today.min) || today.iso
                       : '';
                     const nextService: Service =
-                      nextDate && isServiceAvailableForDate(nextDate, 'dinner') ? 'dinner' : 'lunch';
+                      nextDate && isServiceAvailableForDate(nextDate, 'dinner', schedule) ? 'dinner' : 'lunch';
 
                     setValues({ ...initial, date: nextDate, service: nextService });
                     setErrors({});
@@ -410,8 +437,9 @@ export function Reservation({
                         </span>
                         <div className="relative z-10 grid h-full grid-cols-2">
                           {(['lunch', 'dinner'] as const).map((s) => {
-                            const unavailable =
-                              Boolean(values.date) && (s === 'lunch' ? !lunchAvailable : !dinnerAvailable);
+                            const sOpen = s === 'lunch' ? lunchOpen : dinnerOpen;
+                            const sWalkIn = s === 'lunch' ? lunchWalkIn : dinnerWalkIn;
+                            const closed = Boolean(values.date) && !sOpen;
 
                             return (
                               <button
@@ -419,11 +447,11 @@ export function Reservation({
                                 type="button"
                                 role="radio"
                                 aria-checked={values.service === s}
-                                aria-disabled={unavailable}
-                                disabled={unavailable}
+                                aria-disabled={closed}
+                                disabled={closed}
                                 onClick={() => set('service', s)}
-                                className={`flex items-center justify-center font-display text-[clamp(0.82rem,1.7vw,1.08rem)] font-semibold tracking-wide transition-colors duration-300 disabled:cursor-not-allowed ${
-                                  unavailable
+                                className={`flex items-center justify-center gap-1.5 font-display text-[clamp(0.82rem,1.7vw,1.08rem)] font-semibold tracking-wide transition-colors duration-300 disabled:cursor-not-allowed ${
+                                  closed
                                     ? isLight
                                       ? 'text-[#9b856e]/45'
                                       : 'text-[#f4ece4]/30'
@@ -437,6 +465,7 @@ export function Reservation({
                                 }`}
                               >
                                 {f(s)}
+                                {sWalkIn && <Lock className="h-[0.7em] w-[0.7em] opacity-80" aria-hidden />}
                               </button>
                             );
                           })}
@@ -560,7 +589,7 @@ export function Reservation({
                     {/* Submit — overlays the lacquer bar (red in dark, beige in light) */}
                     <button
                       type="submit"
-                      disabled={status === 'sending'}
+                      disabled={status === 'sending' || serviceWalkIn}
                       style={pos(SL.submit)}
                       className={`group absolute flex items-center justify-center rounded-[10px] font-display text-[clamp(0.95rem,2.1vw,1.25rem)] font-semibold tracking-[0.06em] transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-70 ${
                         isLight
@@ -574,6 +603,24 @@ export function Reservation({
                     </button>
                   </form>
                 </div>
+
+                {/* Walk-in card: service is open but not online bookable */}
+                {serviceWalkIn && (
+                  <div className="reservation-info-card mt-5 w-full max-w-[520px] rounded-[24px] px-6 py-6 text-center">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-ember/15 px-3.5 py-1.5 text-[0.7rem] font-semibold uppercase tracking-eyebrow text-ember">
+                      <Lock className="h-3.5 w-3.5" />
+                      {f(values.service)}
+                    </span>
+                    <p className="mt-4 text-sm leading-relaxed text-cream/85">{walkInMessage}</p>
+                    <a
+                      href="tel:+3251303888"
+                      className="mt-5 inline-flex items-center gap-2.5 rounded-full bg-crimson px-6 py-3 text-sm font-semibold text-[#fff8ed] transition-colors hover:bg-crimson-bright"
+                    >
+                      <Phone className="h-[18px] w-[18px]" />
+                      051 30 38 88
+                    </a>
+                  </div>
+                )}
 
                 {/* Feedback below the panel */}
                 {(hasErrors || status === 'error' || scheduleAlert) && (

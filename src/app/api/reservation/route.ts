@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { isValidReservationSlot, normalizeService } from '@/lib/openingSchedule';
+import { getScheduleConfig } from '@/lib/scheduleConfig.server';
 import { getSupabaseAnon, supabaseConfigured, withTimeout } from '@/lib/supabase/server';
 import { holidayAnnouncementBlocksReservations } from '@/lib/holidayCopy';
 import {
@@ -92,7 +93,8 @@ export async function POST(request: Request) {
   if (!Number.isFinite(reservation.guests)) {
     return NextResponse.json({ ok: false, error: 'invalid_guests' }, { status: 422 });
   }
-  if (!isValidReservationSlot(reservation.date, reservation.service, reservation.time)) {
+  const schedule = await getScheduleConfig();
+  if (!isValidReservationSlot(reservation.date, reservation.service, reservation.time, schedule)) {
     return NextResponse.json({ ok: false, error: 'invalid_reservation_time' }, { status: 422 });
   }
 

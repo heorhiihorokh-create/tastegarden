@@ -1,3 +1,10 @@
+import {
+  DEFAULT_SCHEDULE,
+  timeToMinutes,
+  type ScheduleConfig,
+  type ServiceHours,
+} from '@/lib/scheduleConfig';
+
 export type Service = 'lunch' | 'dinner';
 
 export type ServiceWindow = [number, number];
@@ -8,45 +15,15 @@ export type ReservationDayState = {
   isHoliday: boolean;
   isCompensationTuesdayClosed: boolean;
   isClosed: boolean;
-  closedReason: 'monday' | 'after_monday_holiday' | null;
+  closedReason: 'monday' | 'after_monday_holiday' | 'closed' | null;
   windows: Partial<Record<Service, ServiceWindow>>;
+  /** Online-bookable per service. */
   available: Record<Service, boolean>;
+  /** Physically open but NOT online-bookable (walk-in / phone only) per service. */
+  walkIn: Record<Service, boolean>;
 };
 
 export const RESERVATION_STEP_MINUTES = 30;
-
-const mn = (hours: number, minutes: number) => hours * 60 + minutes;
-
-const DINNER_22: ServiceWindow = [mn(18, 0), mn(22, 0)];
-const DINNER_23: ServiceWindow = [mn(18, 0), mn(23, 0)];
-const LUNCH_WEEKDAY: ServiceWindow = [mn(11, 30), mn(14, 30)];
-const LUNCH_WEEKEND: ServiceWindow = [mn(11, 30), mn(14, 30)];
-const LUNCH_HOLIDAY: ServiceWindow = [mn(11, 30), mn(16, 0)];
-
-const HOLIDAY_WINDOWS: Partial<Record<Service, ServiceWindow>> = {
-  lunch: LUNCH_HOLIDAY,
-  dinner: DINNER_22,
-};
-
-const OPENING_WINDOWS: Record<number, Partial<Record<Service, ServiceWindow>>> = {
-  0: HOLIDAY_WINDOWS,
-  1: {},
-  2: { lunch: LUNCH_WEEKDAY, dinner: DINNER_22 },
-  3: { lunch: LUNCH_WEEKDAY, dinner: DINNER_22 },
-  4: { lunch: LUNCH_WEEKDAY, dinner: DINNER_22 },
-  5: { lunch: LUNCH_WEEKEND, dinner: DINNER_23 },
-  6: { lunch: LUNCH_WEEKEND, dinner: DINNER_23 },
-};
-
-const RESERVATION_WINDOWS: Record<number, Partial<Record<Service, ServiceWindow>>> = {
-  0: HOLIDAY_WINDOWS,
-  1: {},
-  2: { dinner: DINNER_22 },
-  3: { dinner: DINNER_22 },
-  4: { dinner: DINNER_22 },
-  5: { lunch: LUNCH_WEEKEND, dinner: DINNER_23 },
-  6: { lunch: LUNCH_WEEKEND, dinner: DINNER_23 },
-};
 
 const holidayCache = new Map<number, Set<string>>();
 
@@ -141,34 +118,67 @@ export function isCompensationTuesdayClosed(iso: string) {
   return getWeekday(iso) === 2 && isBelgianPublicHoliday(addDaysIso(iso, -1));
 }
 
-export function getOpeningWindowsForDate(iso: string): Partial<Record<Service, ServiceWindow>> {
+function hoursToWindow(hours: ServiceHours, bookableOnly: boolean): ServiceWindow | null {
+  if (!hours.open) return null;
+  if (bookableOnly && !hours.reservable) return null;
+  const from = timeToMinutes(hours.from);
+  const to = timeToMinutes(hours.to);
+  if (from === null || to === null || to <= from) return null;
+  return [from, to];
+}
+
+/**
+ * The single source of truth for a date's windows: a specific-date exception
+ * wins over the recurring weekly grid.
+ *
+ * `bookableOnly` (default true) returns only services that can be booked online
+ * — used by the reservation form and API. Pass false for the display/"open now"
+ * badge, which also counts walk-in (non-reservable) hours.
+ */
+export function resolveWindowsForDate(
+  iso: string,
+  config: ScheduleConfig = DEFAULT_SCHEDULE,
+  bookableOnly = true,
+): Partial<Record<Service, ServiceWindow>> {
   const weekday = getWeekday(iso);
   if (weekday < 0) return {};
 
-  if (isCompensationTuesdayClosed(iso)) return {};
-  if (isBelgianPublicHoliday(iso)) return HOLIDAY_WINDOWS;
+  const exception = config.exceptions[iso];
+  const day = exception
+    ? exception.closed
+      ? null
+      : { lunch: exception.lunch, dinner: exception.dinner }
+    : config.weekly[weekday];
+  if (!day) return {};
 
-  return OPENING_WINDOWS[weekday] ?? {};
+  const windows: Partial<Record<Service, ServiceWindow>> = {};
+  const lunch = hoursToWindow(day.lunch, bookableOnly);
+  const dinner = hoursToWindow(day.dinner, bookableOnly);
+  if (lunch) windows.lunch = lunch;
+  if (dinner) windows.dinner = dinner;
+  return windows;
 }
 
-export function getReservationWindowsForDate(iso: string): Partial<Record<Service, ServiceWindow>> {
-  const weekday = getWeekday(iso);
-  if (weekday < 0) return {};
-
-  if (isCompensationTuesdayClosed(iso)) return {};
-  if (isBelgianPublicHoliday(iso)) return HOLIDAY_WINDOWS;
-
-  return RESERVATION_WINDOWS[weekday] ?? {};
+export function getOpeningWindowsForDate(
+  iso: string,
+  config: ScheduleConfig = DEFAULT_SCHEDULE,
+): Partial<Record<Service, ServiceWindow>> {
+  // Physical opening hours for the "open now" badge — include walk-in hours.
+  return resolveWindowsForDate(iso, config, false);
 }
 
-export function getReservationDayState(iso: string): ReservationDayState {
+export function getReservationDayState(
+  iso: string,
+  config: ScheduleConfig = DEFAULT_SCHEDULE,
+): ReservationDayState {
   const weekday = getWeekday(iso);
   const isHoliday = isBelgianPublicHoliday(iso);
   const isCompensation = isCompensationTuesdayClosed(iso);
-  const windows = getReservationWindowsForDate(iso);
-  const isClosed = Object.keys(windows).length === 0;
-  const closedReason =
-    isCompensation ? 'after_monday_holiday' : weekday === 1 && !isHoliday ? 'monday' : null;
+  const bookable = resolveWindowsForDate(iso, config, true);
+  const open = resolveWindowsForDate(iso, config, false);
+  // "Closed" = physically closed (no service open at all); a walk-in-only day is
+  // NOT closed — it shows the walk-in message instead of "gesloten".
+  const isClosed = Object.keys(open).length === 0;
 
   return {
     iso,
@@ -176,17 +186,25 @@ export function getReservationDayState(iso: string): ReservationDayState {
     isHoliday,
     isCompensationTuesdayClosed: isCompensation,
     isClosed,
-    closedReason,
-    windows,
+    closedReason: isClosed ? 'closed' : null,
+    windows: bookable,
     available: {
-      lunch: Boolean(windows.lunch),
-      dinner: Boolean(windows.dinner),
+      lunch: Boolean(bookable.lunch),
+      dinner: Boolean(bookable.dinner),
+    },
+    walkIn: {
+      lunch: Boolean(open.lunch) && !bookable.lunch,
+      dinner: Boolean(open.dinner) && !bookable.dinner,
     },
   };
 }
 
-export function isServiceAvailableForDate(iso: string, service: Service) {
-  return Boolean(getReservationWindowsForDate(iso)[service]);
+export function isServiceAvailableForDate(
+  iso: string,
+  service: Service,
+  config: ScheduleConfig = DEFAULT_SCHEDULE,
+) {
+  return Boolean(resolveWindowsForDate(iso, config)[service]);
 }
 
 export function formatSlot(minutes: number) {
@@ -196,10 +214,11 @@ export function formatSlot(minutes: number) {
 export function buildReservationSlots(
   iso: string,
   service: Service,
+  config: ScheduleConfig = DEFAULT_SCHEDULE,
   isToday = false,
   nowMinutes = 0,
 ) {
-  const window = getReservationWindowsForDate(iso)[service];
+  const window = resolveWindowsForDate(iso, config)[service];
   if (!window) return [];
 
   const [start, end] = window;
@@ -233,14 +252,19 @@ export function getBelgiumNow(now = new Date()) {
   return { iso, minutes };
 }
 
-export function getNextBookableDateIso(fromIso: string, service?: Service, nowMinutes = 0) {
+export function getNextBookableDateIso(
+  fromIso: string,
+  config: ScheduleConfig = DEFAULT_SCHEDULE,
+  service?: Service,
+  nowMinutes = 0,
+) {
   for (let offset = 0; offset <= 45; offset += 1) {
     const iso = addDaysIso(fromIso, offset);
     if (!iso) return '';
 
     const services: Service[] = service ? [service] : ['dinner', 'lunch'];
     const isToday = offset === 0;
-    if (services.some((item) => buildReservationSlots(iso, item, isToday, nowMinutes).length > 0)) {
+    if (services.some((item) => buildReservationSlots(iso, item, config, isToday, nowMinutes).length > 0)) {
       return iso;
     }
   }
@@ -256,8 +280,9 @@ export function isValidReservationSlot(
   iso: string,
   service: Service,
   time: string,
+  config: ScheduleConfig = DEFAULT_SCHEDULE,
   now = new Date(),
 ) {
   const current = getBelgiumNow(now);
-  return buildReservationSlots(iso, service, iso === current.iso, current.minutes).includes(time);
+  return buildReservationSlots(iso, service, config, iso === current.iso, current.minutes).includes(time);
 }

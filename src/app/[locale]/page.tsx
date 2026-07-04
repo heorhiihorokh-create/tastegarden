@@ -1,5 +1,6 @@
 import { setRequestLocale } from 'next-intl/server';
 import { getBannerStatus, type Locale } from '@/lib/settings';
+import { getScheduleConfig } from '@/lib/scheduleConfig.server';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { StickyMobileBar } from '@/components/layout/StickyMobileBar';
@@ -30,7 +31,7 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const status = await getBannerStatus();
+  const [status, schedule] = await Promise.all([getBannerStatus(), getScheduleConfig()]);
   const currentLocale = (['nl', 'fr', 'en'].includes(locale) ? locale : 'nl') as Locale;
   const pickLocalized = (values: Record<Locale, string>) =>
     values[currentLocale]?.trim() || values.nl?.trim() || values.fr?.trim() || values.en?.trim() || '';
@@ -61,8 +62,8 @@ export default async function HomePage({
         </KitchenContinuum>
         <Formules />
         <Dishes />
-        <Practical />
-        <Reservation bookingsClosed={status.bookingsClosed} closedMessage={closedMessage} holiday={holiday} />
+        <Practical schedule={schedule} />
+        <Reservation bookingsClosed={status.bookingsClosed} closedMessage={closedMessage} holiday={holiday} schedule={schedule} />
         <Ambiance />
       </main>
       <Footer />
