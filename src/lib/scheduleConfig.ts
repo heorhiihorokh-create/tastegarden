@@ -136,11 +136,16 @@ const ISO_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 export function normalizeException(value: unknown): DateException {
   const v = (value ?? {}) as Partial<DateException>;
-  const closed = v.closed === true;
+  const lunch = normalizeServiceHours(v.lunch);
+  const dinner = normalizeServiceHours(v.dinner);
+  // Explicitly closed OR no service open at all → the day is closed. (Without
+  // this, "uncheck both services" would look like a no-op and silently fall
+  // back to the recurring weekly hours.)
+  const closed = v.closed === true || (!lunch.open && !dinner.open);
   return {
     closed,
-    lunch: closed ? { ...off } : normalizeServiceHours(v.lunch),
-    dinner: closed ? { ...off } : normalizeServiceHours(v.dinner),
+    lunch: closed ? { ...off } : lunch,
+    dinner: closed ? { ...off } : dinner,
   };
 }
 
@@ -156,10 +161,9 @@ export function normalizeScheduleConfig(value: unknown): ScheduleConfig {
   if (v.exceptions && typeof v.exceptions === 'object') {
     for (const [iso, ex] of Object.entries(v.exceptions)) {
       if (!ISO_RE.test(iso)) continue;
-      const normalized = normalizeException(ex);
-      // Drop no-op exceptions (not closed, both services closed = same as "no override").
-      if (!normalized.closed && !normalized.lunch.open && !normalized.dinner.open) continue;
-      exceptions[iso] = normalized;
+      // Keep every valid-date exception; "no service open" is now a real closed
+      // day (see normalizeException), not a no-op to drop.
+      exceptions[iso] = normalizeException(ex);
     }
   }
 

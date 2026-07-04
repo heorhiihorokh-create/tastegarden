@@ -94,38 +94,40 @@ function ServiceRow({
         />
         {label}
       </label>
-      <div className="flex items-center gap-1.5">
-        <input
-          type="time"
-          value={value.from}
-          disabled={!value.open}
-          onChange={(e) => onChange({ from: e.target.value })}
-          className={timeInput}
-          aria-label={`${label} van`}
-        />
-        <span className="text-zinc-400">–</span>
-        <input
-          type="time"
-          value={value.to}
-          disabled={!value.open}
-          onChange={(e) => onChange({ to: e.target.value })}
-          className={timeInput}
-          aria-label={`${label} tot`}
-        />
-      </div>
-      {value.open && (
-        <label
-          className="flex items-center gap-1.5 text-xs text-zinc-600"
-          title="Uit = wel tonen op de site met een slotje (telefoon/walk-in), maar niet online reserveerbaar."
-        >
-          <input
-            type="checkbox"
-            checked={value.reservable}
-            onChange={(e) => onChange({ reservable: e.target.checked })}
-            className="h-3.5 w-3.5"
-          />
-          online reserveerbaar
-        </label>
+      {value.open ? (
+        <>
+          <div className="flex items-center gap-1.5">
+            <input
+              type="time"
+              value={value.from}
+              onChange={(e) => onChange({ from: e.target.value })}
+              className={timeInput}
+              aria-label={`${label} van`}
+            />
+            <span className="text-zinc-400">–</span>
+            <input
+              type="time"
+              value={value.to}
+              onChange={(e) => onChange({ to: e.target.value })}
+              className={timeInput}
+              aria-label={`${label} tot`}
+            />
+          </div>
+          <label
+            className="flex items-center gap-1.5 text-xs text-zinc-600"
+            title="Uit = wel tonen op de site met een slotje (telefoon/walk-in), maar niet online reserveerbaar."
+          >
+            <input
+              type="checkbox"
+              checked={value.reservable}
+              onChange={(e) => onChange({ reservable: e.target.checked })}
+              className="h-3.5 w-3.5"
+            />
+            online reserveerbaar
+          </label>
+        </>
+      ) : (
+        <span className="text-sm text-zinc-400">gesloten</span>
       )}
     </div>
   );
