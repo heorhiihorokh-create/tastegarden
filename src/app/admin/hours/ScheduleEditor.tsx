@@ -65,9 +65,24 @@ const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const ISO_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 const timeInput =
-  'rounded border border-zinc-300 bg-white px-2 py-1 text-sm text-zinc-900 outline-none focus:border-zinc-900 disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-400';
+  'rounded border border-zinc-300 bg-white px-2 py-1 text-sm text-zinc-900 outline-none focus:border-zinc-900';
+const selectInput =
+  'rounded border border-zinc-300 bg-white px-2 py-1 text-sm text-zinc-900 outline-none focus:border-zinc-900';
 
-/** Editor for one service (lunch or dinner): open toggle + van/tot + online-bookable. */
+type ServiceState = 'closed' | 'bookable' | 'walkin';
+
+function stateOf(v: ServiceHours): ServiceState {
+  if (!v.open) return 'closed';
+  return v.reservable ? 'bookable' : 'walkin';
+}
+
+/**
+ * One service (lunch or dinner) as a single 3-way choice — clearer than two
+ * separate checkboxes:
+ *   Gesloten            = closed
+ *   Online reserveerbaar = open + bookable online
+ *   Enkel telefonisch    = open but walk-in only (shown with a lock, no online)
+ */
 function ServiceRow({
   label,
   value,
@@ -77,57 +92,47 @@ function ServiceRow({
   value: ServiceHours;
   onChange: (patch: Partial<ServiceHours>) => void;
 }) {
+  const setState = (s: ServiceState) => {
+    if (s === 'closed') {
+      onChange({ open: false, reservable: false });
+      return;
+    }
+    // Default sensible hours if none set yet, so "open" never saves as empty.
+    const times = value.from && value.to ? {} : { from: '18:00', to: '22:00' };
+    onChange({ open: true, reservable: s === 'bookable', ...times });
+  };
+
   return (
     <div className="flex flex-wrap items-center gap-2.5">
-      <label className="flex w-24 items-center gap-2 text-sm font-medium text-zinc-700">
-        <input
-          type="checkbox"
-          checked={value.open}
-          onChange={(e) =>
-            onChange(
-              e.target.checked && !value.open
-                ? { open: true, reservable: true }
-                : { open: e.target.checked },
-            )
-          }
-          className="h-4 w-4"
-        />
-        {label}
-      </label>
-      {value.open ? (
-        <>
-          <div className="flex items-center gap-1.5">
-            <input
-              type="time"
-              value={value.from}
-              onChange={(e) => onChange({ from: e.target.value })}
-              className={timeInput}
-              aria-label={`${label} van`}
-            />
-            <span className="text-zinc-400">–</span>
-            <input
-              type="time"
-              value={value.to}
-              onChange={(e) => onChange({ to: e.target.value })}
-              className={timeInput}
-              aria-label={`${label} tot`}
-            />
-          </div>
-          <label
-            className="flex items-center gap-1.5 text-xs text-zinc-600"
-            title="Uit = wel tonen op de site met een slotje (telefoon/walk-in), maar niet online reserveerbaar."
-          >
-            <input
-              type="checkbox"
-              checked={value.reservable}
-              onChange={(e) => onChange({ reservable: e.target.checked })}
-              className="h-3.5 w-3.5"
-            />
-            online reserveerbaar
-          </label>
-        </>
-      ) : (
-        <span className="text-sm text-zinc-400">gesloten</span>
+      <span className="w-16 shrink-0 text-sm font-medium text-zinc-700">{label}</span>
+      <select
+        value={stateOf(value)}
+        onChange={(e) => setState(e.target.value as ServiceState)}
+        className={selectInput}
+        aria-label={label}
+      >
+        <option value="closed">Gesloten</option>
+        <option value="bookable">Online reserveerbaar</option>
+        <option value="walkin">Enkel telefonisch (slotje)</option>
+      </select>
+      {value.open && (
+        <div className="flex items-center gap-1.5">
+          <input
+            type="time"
+            value={value.from}
+            onChange={(e) => onChange({ from: e.target.value })}
+            className={timeInput}
+            aria-label={`${label} van`}
+          />
+          <span className="text-zinc-400">–</span>
+          <input
+            type="time"
+            value={value.to}
+            onChange={(e) => onChange({ to: e.target.value })}
+            className={timeInput}
+            aria-label={`${label} tot`}
+          />
+        </div>
       )}
     </div>
   );
@@ -266,9 +271,9 @@ export function ScheduleEditor({
       <section className="rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6">
         <h2 className="text-lg font-semibold text-zinc-900">Vaste openingsuren (per weekdag)</h2>
         <p className="mt-1 text-sm text-zinc-500">
-          Vink aan wanneer de zaak open is. Beide diensten uit = die dag gesloten. Zet
-          “online reserveerbaar” uit om de uren wél te tonen (met een slotje), maar zonder
-          online reservatie — enkel telefonisch of walk-in.
+          Kies per dienst: <strong>Gesloten</strong>, <strong>Online reserveerbaar</strong>, of
+          <strong> Enkel telefonisch</strong> (uren worden getoond met een slotje, maar niet online
+          te reserveren — enkel bellen/walk-in). Beide diensten gesloten = die dag dicht.
         </p>
 
         <div className="mt-4 divide-y divide-zinc-100">
